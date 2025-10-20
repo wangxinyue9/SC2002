@@ -1,3 +1,5 @@
+package Assignment_1;
+
 /**
  * An enum to represent Internship Opportunity status: “Pending”, “Approved”, “Rejected”, “Filled"
  * @author jarif
