@@ -38,6 +38,10 @@ public abstract class User {
         return userPassword;
     }
 
+    public String getName(){
+        return name;
+    }
+
     public void changePassword(){
         System.out.println("Old password: ");
         Scanner scanner = new Scanner(System.in);
