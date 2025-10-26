@@ -1,13 +1,12 @@
-package Assignment_1;
+package internship_management_system.internships;
 
+import internship_management_system.enums.InternshipLevel;
+import internship_management_system.enums.InternshipOpportunityStatus;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-/**
- *
- * @author jarif
- */
-public class InternshipOpportunity {
+public class InternshipOpportunity
+{
     private final int id;
     private final String title, description, preferredMajor;
     private final InternshipLevel level;
@@ -20,7 +19,8 @@ public class InternshipOpportunity {
 
     private static ArrayList<InternshipOpportunity> internshipOpportunities;
 
-    public InternshipOpportunity(int id, String title, String description, String preferredMajor, InternshipLevel level, LocalDate openingDate, LocalDate closingDate, String companyRep, int numOfSlots, boolean visibility) {
+    public InternshipOpportunity(int id, String title, String description, String preferredMajor, InternshipLevel level, LocalDate openingDate, LocalDate closingDate, String companyRep, int numOfSlots, boolean visibility)
+    {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -35,13 +35,15 @@ public class InternshipOpportunity {
         this.visibility = visibility;
     }
 
-    public static int addNewOpportunity(String title, String description, String preferredMajor, InternshipLevel level, LocalDate openingDate, LocalDate closingDate, String companyRep, int numOfSlots, boolean visibility) {
+    public static int addNewOpportunity(String title, String description, String preferredMajor, InternshipLevel level, LocalDate openingDate, LocalDate closingDate, String companyRep, int numOfSlots, boolean visibility)
+    {
         int id = internshipOpportunities.size();
         internshipOpportunities.add(new InternshipOpportunity(id, title, description, preferredMajor, level, openingDate, closingDate, companyRep, numOfSlots, visibility));
         return id;
     }
 
-    public static ArrayList<InternshipOpportunity> getOpportunitiesList(String filter) {
+    public static ArrayList<InternshipOpportunity> getOpportunitiesList(String filter)
+    {
         // TODO: Do filtering here
         return internshipOpportunities;
     }
@@ -89,7 +91,8 @@ public class InternshipOpportunity {
     public void toggleVisibility() {
         this.visibility = !this.visibility;
     }
-    public void newApplication(String student) {
+    public void newApplication(String student)
+    {
         // TODO: Check if the student is eligible
         // TODO: CHECK IF THE STUDENT HAS ALREADY ACCEPTED SOME OTHER APPLICATION
         // TODO: CHECK if student has already applied for the same opportunity
@@ -101,15 +104,19 @@ public class InternshipOpportunity {
         InternshipApplication.addNewOpportunity(this, student);
     }
 
-    void freeUpASlot() { // It will only be used by other classes (i.e. by classes in the same package, not ui). So, shouldn't be public
+    void freeUpASlot()
+    { // It will only be used by other classes (i.e. by classes in the same package, not ui). So, shouldn't be public
         numOfRemainingSlots++;
-        if(numOfRemainingSlots == 1) {
+        if(numOfRemainingSlots == 1)
+        {
             this.status = InternshipOpportunityStatus.APPROVED;
         }
     }
-    void takeUpASlot() {
+    void takeUpASlot()
+    {
         numOfRemainingSlots--;
-        if(numOfRemainingSlots == 0) {
+        if(numOfRemainingSlots == 0)
+        {
             this.status = InternshipOpportunityStatus.FILLED;
         }
     }

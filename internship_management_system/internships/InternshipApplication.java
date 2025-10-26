@@ -1,12 +1,14 @@
-package Assignment_1;
+package internship_management_system.internships;
+
+import internship_management_system.enums.InternshipApplicationStatus;
+import internship_management_system.enums.InternshipOpportunityStatus;
+import internship_management_system.enums.PlacementConfirmationStatus;
+import internship_management_system.enums.WithdrawStatus;
 
 import java.util.ArrayList;
 
-/**
- *
- * @author jarif
- */
-public class InternshipApplication {
+public class InternshipApplication
+{
     private final int id;
     private final InternshipOpportunity opportunity;
     private final String student; // TODO: Change type to Student later
@@ -16,7 +18,8 @@ public class InternshipApplication {
 
     private static ArrayList<InternshipApplication> internshipApplications;
 
-    public InternshipApplication(int id, InternshipOpportunity opportunity, String student) {
+    public InternshipApplication(int id, InternshipOpportunity opportunity, String student)
+    {
         this.id = id;
         this.opportunity = opportunity;
         this.student = student;
@@ -25,13 +28,15 @@ public class InternshipApplication {
         this.placementConfirmationStatus = PlacementConfirmationStatus.PENDING;
     }
 
-    public static int addNewOpportunity(InternshipOpportunity opportunity, String student) {
+    public static int addNewOpportunity(InternshipOpportunity opportunity, String student)
+    {
         int id = internshipApplications.size();
         internshipApplications.add(new InternshipApplication(id, opportunity, student));
         return id;
     }
 
-    public static ArrayList<InternshipApplication> getApplicationList(String filter) {
+    public static ArrayList<InternshipApplication> getApplicationList(String filter)
+    {
         // TODO: Filter here
         return internshipApplications;
     }
@@ -52,21 +57,24 @@ public class InternshipApplication {
         return  withdrawStatus;
     }
     
-    public void finalizeApplicationStatus(boolean offerInternship) { // Only used by CompanyRep
+    public void finalizeApplicationStatus(boolean offerInternship)
+    { // Only used by CompanyRep
         if(this.status != InternshipApplicationStatus.PENDING) throw new Error("Application status already finalized");
         if(this.withdrawStatus == WithdrawStatus.APPROVED) throw new Error("Application already withdrawn");
         // ?? if(this.opportunity.getStatus() == InternshipOpportunityStatus.FILLED) throw new Error("Internship opportunity already filled");
         if(offerInternship) this.status = InternshipApplicationStatus.SUCCESSFUL;
         else this.status = InternshipApplicationStatus.UNSUCCESSFUL;
     }
-    public void confirmPlacement(boolean accept) {
+
+    public void confirmPlacement(boolean accept)
+    {
         if(this.withdrawStatus == WithdrawStatus.APPROVED) throw new Error("Application already withdrawn");
         if(this.status != InternshipApplicationStatus.SUCCESSFUL) throw new Error("Internship hasn't been offered");
-        if(!accept) {
+        if(!accept)
             this.placementConfirmationStatus = PlacementConfirmationStatus.REJECTED;
-        }
-        else {
-            if(this.opportunity.getStatus() == InternshipOpportunityStatus.FILLED) throw new Error("Internship opportunity already filled"); // Sorry bro you didn't accept in time 
+        else
+        {
+            if(this.opportunity.getStatus() == InternshipOpportunityStatus.FILLED) throw new Error("Internship opportunity already filled"); // Sorry bro you didn't accept in time
             // TODO: CHECK IF THE STUDENT HAS ALREADY ACCEPTED SOME OTHER OFFER
             // if(this.student.acceptedSomeOffer()) throw ...
             this.placementConfirmationStatus = PlacementConfirmationStatus.ACCEPTED;
@@ -81,12 +89,16 @@ public class InternshipApplication {
         }
     }
 
-    public void requestWithdraw() {
+    public void requestWithdraw()
+    {
         if(this.withdrawStatus != WithdrawStatus.NOT_REQUESTED) throw new Error("Already requested");
         this.withdrawStatus = WithdrawStatus.PENDING;
     }
-    public void confirmWithdraw(boolean approve) {
-        if(approve) {
+
+    public void confirmWithdraw(boolean approve)
+    {
+        if(approve)
+        {
             this.withdrawStatus = WithdrawStatus.APPROVED;
             if(this.status == InternshipApplicationStatus.SUCCESSFUL && this.placementConfirmationStatus == PlacementConfirmationStatus.ACCEPTED) {
                 // TODO: toggle acceptedSomeOffer
@@ -94,8 +106,7 @@ public class InternshipApplication {
                 this.opportunity.freeUpASlot();
             }
         }
-        else {
+        else
             this.withdrawStatus = WithdrawStatus.REJECTED;
-        }
     }
 }
