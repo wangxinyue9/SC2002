@@ -46,7 +46,7 @@ public abstract class User {
         System.out.println("Old password: ");
         Scanner scanner = new Scanner(System.in);
         String oldPassword = scanner.nextLine();
-        if (oldPassword == userPassword){
+        if (oldPassword.equals(userPassword)){
             System.out.println("New password: ");
             String newPassword = scanner.nextLine();
             userPassword = newPassword;
