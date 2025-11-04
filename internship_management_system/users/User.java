@@ -157,7 +157,6 @@ public abstract class User {
         return applyFilterSettings(this.filtersettings);
     }
 
-    // Setters that directly mutate this user's filter settings (no FilterSettings input)
 
     // Inputs for opportunity statuses:
     // - null: keep current statuses unchanged
