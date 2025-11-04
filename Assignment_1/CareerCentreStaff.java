@@ -164,7 +164,7 @@ public class CareerCentreStaff extends User {
     // Display comprehensive internship report (alphabetical by default)
     public void displayComprehensiveReport() {
         FilterSettings filtersettings = new FilterSettings(); // default filters
-        List<InternshipOpportunity> opportunities = saveAndApplyFilterInternship(filtersettings);
+        List<InternshipOpportunity> opportunities = applyFilterSettings(filtersettings);
 
         if (opportunities == null || opportunities.isEmpty()) {
             System.out.println("No internship opportunities found.");
@@ -183,9 +183,10 @@ public class CareerCentreStaff extends User {
 
     // Apply filters (for now just default alphabetical order)
     @Override
-    public List<InternshipOpportunity> saveAndApplyFilterInternship(FilterSettings filtersettings) {
+    public List<InternshipOpportunity> applyFilterSettings(FilterSettings filtersettings) {
         return InternshipOpportunity.getOpportunitiesList("").stream()
                 .sorted(Comparator.comparing(InternshipOpportunity::getTitle))
                 .collect(Collectors.toList());
     }
 }
+

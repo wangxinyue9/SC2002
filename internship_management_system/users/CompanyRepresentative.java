@@ -57,7 +57,7 @@ public class CompanyRepresentative extends User
     }
 
     @Override
-    public List<InternshipOpportunity> saveAndApplyFilterInternship(FilterSettings filtersettings)
+    public List<InternshipOpportunity> applyFilterSettings(FilterSettings filtersettings)
     {
         return List.of();
     }

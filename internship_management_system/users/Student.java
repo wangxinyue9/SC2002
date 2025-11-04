@@ -1,6 +1,6 @@
 package internship_management_system.users;
 
-import internship_management_system.FilterSettings;
+import Assignment_1.FilterSettings;
 import internship_management_system.internships.InternshipApplication;
 import internship_management_system.internships.InternshipOpportunity;
 import internship_management_system.enums.WithdrawStatus;
@@ -26,16 +26,13 @@ public class Student extends User
         successfulInternships = new ArrayList<>();
         acceptedSomeOffer = false;
         //should probably edit the filtersettings here too
+        
     }
 
     @Override
-    public List<InternshipOpportunity> saveAndApplyFilterInternship(FilterSettings filtersettings)
+    public List<InternshipOpportunity> applyFilterSettings(FilterSettings filtersettings)
     {
-        //first apply the filter settings 
-        //then display the internships matching the filters 
-        //option for student to change the filters 
-        //when filters change, it auto saves in filter settings
-        return null;
+        return super.applyFilterSettings(filtersettings);
     }
 
     public void applyForInternship(InternshipOpportunity internship)
@@ -126,11 +123,12 @@ public class Student extends User
 // Student
 
 // Initialize/configure filter settings for a student in the constructor.
-// Implement saveAndApplyFilterInternship to:
+// Implement applyFilterSettings to:
 // Apply current filters,
 // Display matching internships,
 // Allow changes to filters,
 // Auto-save updated filters
 // Consider refactoring application API to use Student object instead of userID when calling newApplication
-// Decide how to use or remove successfulInternships since it’s “not used right now.” 
+// Decide how to use or remove successfulInternships since it’s “not used right now.�?
 // Ensure external flow (e.g., staff approval) calls removeAppliedInternship after withdraw approval to keep applied list in sync
+
