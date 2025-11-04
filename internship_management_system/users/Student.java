@@ -24,8 +24,27 @@ public class Student extends User
         this.major = major;
         appliedInternships = new ArrayList<>();
         successfulInternships = new ArrayList<>();
-        acceptedSomeOffer = false;
-        //should probably edit the filtersettings here too
+        acceptedSomeOffer = false;        // Initialize student-specific default filter settings
+        FilterSettings.Builder fb = new FilterSettings.Builder();
+        // Only public opportunities
+        fb.visibleOnly(true);
+        // Status: APPROVED or FILLED
+        fb.addStatus(internship_management_system.enums.InternshipOpportunityStatus.APPROVED);
+        fb.addStatus(internship_management_system.enums.InternshipOpportunityStatus.FILLED);
+        // Level by year of study
+        if (this.yearOfStudy <= 2) {
+            fb.addLevel(internship_management_system.enums.InternshipLevel.BASIC);
+        } else {
+            fb.addLevel(internship_management_system.enums.InternshipLevel.BASIC);
+            fb.addLevel(internship_management_system.enums.InternshipLevel.INTERMEDIATE);
+            fb.addLevel(internship_management_system.enums.InternshipLevel.ADVANCED);
+        }
+        // Major: student's own major
+        if (this.major != null && !this.major.isEmpty()) {
+            fb.addMajor(this.major);
+        }
+        // Persist on the user
+        setFilterSettings(fb.build());
         
     }
 
@@ -115,7 +134,7 @@ public class Student extends User
     @Override
     protected java.util.Map<String, Boolean> getFilterEditCapabilities() {
         java.util.Map<String, Boolean> caps = new java.util.HashMap<>();
-        caps.put("opportunityStatus", false);
+        caps.put("opportunityStatus", true);
         caps.put("level", false);
         caps.put("majors", false);
         caps.put("visibility", false);
@@ -142,6 +161,8 @@ public class Student extends User
 // Consider refactoring application API to use Student object instead of userID when calling newApplication
 // Decide how to use or remove successfulInternships since it鈥檚 鈥渘ot used right now.鈥?
 // Ensure external flow (e.g., staff approval) calls removeAppliedInternship after withdraw approval to keep applied list in sync
+
+
 
 
 
