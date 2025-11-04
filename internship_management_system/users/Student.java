@@ -1,4 +1,4 @@
-package internship_management_system.users;
+﻿package internship_management_system.users;
 
 import Assignment_1.FilterSettings;
 import internship_management_system.internships.InternshipApplication;
@@ -112,6 +112,17 @@ public class Student extends User
     public void toggleAcceptedSomeOffer(){
         acceptedSomeOffer = true;
     }
+    @Override
+    protected java.util.Map<String, Boolean> getFilterEditCapabilities() {
+        java.util.Map<String, Boolean> caps = new java.util.HashMap<>();
+        caps.put("opportunityStatus", false);
+        caps.put("level", false);
+        caps.put("majors", false);
+        caps.put("visibility", false);
+        caps.put("closingDates", true);
+        caps.put("sort", true);
+        return caps;
+    }
 }
 
 // User
@@ -129,6 +140,8 @@ public class Student extends User
 // Allow changes to filters,
 // Auto-save updated filters
 // Consider refactoring application API to use Student object instead of userID when calling newApplication
-// Decide how to use or remove successfulInternships since it’s “not used right now.�?
+// Decide how to use or remove successfulInternships since it鈥檚 鈥渘ot used right now.鈥?
 // Ensure external flow (e.g., staff approval) calls removeAppliedInternship after withdraw approval to keep applied list in sync
+
+
 

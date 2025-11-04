@@ -1,11 +1,10 @@
-package Assignment_1;
+﻿package Assignment_1;
 import java.util.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import internship_management_system.internships.InternshipOpportunity;
 import internship_management_system.enums.InternshipOpportunityStatus;
 import internship_management_system.enums.InternshipLevel;
-import internship_management_system.enums.InternshipApplicationStatus;
 
 
 public abstract class User {
@@ -167,8 +166,7 @@ public abstract class User {
     protected Map<String, Boolean> getFilterEditCapabilities() {
         Map<String, Boolean> caps = new HashMap<>();
         caps.put("opportunityStatus", true);
-        caps.put("applicationStatus", true);
-        caps.put("level", true);
+                caps.put("level", true);
         caps.put("majors", true);
         caps.put("visibility", true);
         caps.put("closingDates", true);
@@ -196,22 +194,7 @@ public abstract class User {
             }
         } else { for (InternshipOpportunityStatus s : current.statuses()) { b.addStatus(s); } }
 
-        // 1a) Application Statuses
-        if (caps.getOrDefault("applicationStatus", true)) {
-            System.out.println("Change application status filter?");
-            System.out.println("0) No change");
-            System.out.println("1) No restriction (clear)");
-            InternshipApplicationStatus[] appVals = InternshipApplicationStatus.values();
-            for (int i = 0; i < appVals.length; i++) { System.out.println((i + 2) + ") " + appVals[i]); }
-            System.out.print("Enter choice: ");
-            int appChoice = promptInt(scanner, 0, appVals.length + 1);
-            switch (appChoice) {
-                case 0 -> { for (InternshipApplicationStatus s : current.applicationStatuses()) { b.addApplicationStatus(s); } }
-                case 1 -> { }
-                default -> { int sel = appChoice - 2; if (sel >= 0 && sel < appVals.length) { b.addApplicationStatus(appVals[sel]); } }
-            }
-        } else { for (InternshipApplicationStatus s : current.applicationStatuses()) { b.addApplicationStatus(s); } }
-
+        // 1a) Application Statuses (removed)\n
         // 2) Levels
         if (caps.getOrDefault("level", true)) {
             System.out.println("Change level filter?");
@@ -324,4 +307,5 @@ public abstract class User {
         }
     }
 }
+
 
