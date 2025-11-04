@@ -5,14 +5,14 @@ import java.util.*;
 
 public class DataStorage
 {
-    private ArrayList<Student> students = new ArrayList<>();
-    private ArrayList<CompanyRepresentative> companyReps = new ArrayList<>();
+    private static ArrayList<Student> students = new ArrayList<>();
+    private static ArrayList<CompanyRepresentative> companyReps = new ArrayList<>();
 
     // --- Add Methods ---
-    public void addStudent(Student s) { students.add(s); }
-    public void addTeacher(CompanyRepresentative cr) { companyReps.add(cr); }
+    public static void addStudent(Student s) { students.add(s); }
+    public static void addTeacher(CompanyRepresentative cr) { companyReps.add(cr); }
 
     // --- Getters ---
-    public ArrayList<Student> getStudents() { return students; }
-    public ArrayList<CompanyRepresentative> getCompanyReps() { return companyReps; }
+    public static ArrayList<Student> getStudents() { return students; }
+    public static ArrayList<CompanyRepresentative> getCompanyReps() { return companyReps; }
 }
