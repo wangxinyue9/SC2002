@@ -1,3 +1,4 @@
+package internship_management_system.users;
 import java.util.*;
 import java.util.stream.Collectors;
 

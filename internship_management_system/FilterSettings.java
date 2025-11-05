@@ -1,4 +1,4 @@
-package Assignment_1;  // keep this line because your other files use it
+package internship_management_system;  // keep this line because your other files use it
 
 import internship_management_system.enums.InternshipLevel;
 import internship_management_system.enums.InternshipOpportunityStatus;

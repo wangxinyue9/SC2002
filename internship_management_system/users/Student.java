@@ -1,9 +1,11 @@
 ﻿package internship_management_system.users;
 
-import Assignment_1.FilterSettings;
+import internship_management_system.FilterSettings;
 import internship_management_system.internships.InternshipApplication;
 import internship_management_system.internships.InternshipOpportunity;
 import internship_management_system.enums.WithdrawStatus;
+import internship_management_system.enums.InternshipOpportunityStatus;
+import internship_management_system.enums.InternshipLevel;
 import java.util.*;
 
 public class Student extends User
@@ -18,41 +20,44 @@ public class Student extends User
 
     public Student(String id, String name, String password, int yearOfStudy, String major)
     {
-        super(id, name, password);
+        // User constructor is (name, userID, userPassword)
+        super(name, id, password);
 
         this.yearOfStudy = yearOfStudy;
         this.major = major;
         appliedInternships = new ArrayList<>();
         successfulInternships = new ArrayList<>();
-        acceptedSomeOffer = false;        // Initialize student-specific default filter settings
-        FilterSettings.Builder fb = new FilterSettings.Builder();
+        acceptedSomeOffer = false;
+
+        // Initialize student-specific default filter settings using User's setters
         // Only public opportunities
-        fb.visibleOnly(true);
+        super.setVisibility(true);
+
         // Status: APPROVED or FILLED
-        fb.addStatus(internship_management_system.enums.InternshipOpportunityStatus.APPROVED);
-        fb.addStatus(internship_management_system.enums.InternshipOpportunityStatus.FILLED);
+        java.util.Set<InternshipOpportunityStatus> statuses = new java.util.HashSet<>();
+        statuses.add(InternshipOpportunityStatus.APPROVED);
+        statuses.add(InternshipOpportunityStatus.FILLED);
+        super.setOpportunityStatuses(statuses);
+
         // Level by year of study
+        java.util.Set<InternshipLevel> levels = new java.util.HashSet<>();
         if (this.yearOfStudy <= 2) {
-            fb.addLevel(internship_management_system.enums.InternshipLevel.BASIC);
+            levels.add(InternshipLevel.BASIC);
         } else {
-            fb.addLevel(internship_management_system.enums.InternshipLevel.BASIC);
-            fb.addLevel(internship_management_system.enums.InternshipLevel.INTERMEDIATE);
-            fb.addLevel(internship_management_system.enums.InternshipLevel.ADVANCED);
+            levels.add(InternshipLevel.BASIC);
+            levels.add(InternshipLevel.INTERMEDIATE);
+            levels.add(InternshipLevel.ADVANCED);
         }
-        // Major: student's own major
+        super.setLevels(levels);
+
+        // Major: student's own major (stored uppercase to match comparison logic)
         if (this.major != null && !this.major.isEmpty()) {
-            fb.addMajor(this.major);
+            java.util.Set<String> majors = new java.util.HashSet<>();
+            majors.add(this.major.toUpperCase());
+            super.setMajors(majors);
         }
-        // Persist on the user
-        setFilterSettings(fb.build());
-        
     }
 
-    @Override
-    public List<InternshipOpportunity> applyFilterSettings(FilterSettings filtersettings)
-    {
-        return super.applyFilterSettings(filtersettings);
-    }
 
     public void applyForInternship(InternshipOpportunity internship)
     {
@@ -66,7 +71,7 @@ public class Student extends User
         }
 
         // Create a new application via the opportunity API
-        internship.newApplication(getId()); // maybe should use the student object directly
+        internship.newApplication(getUserID()); // maybe should use the student object directly
 
         // Locate the newly created application from the global list
         InternshipApplication created = null;
@@ -75,7 +80,7 @@ public class Student extends User
         {
             for (InternshipApplication app : all)
             {
-                if (app.getStudent().equals(getId()) && app.getOpportunity().equals(internship))
+                if (app.getStudent().equals(getUserID()) && app.getOpportunity().equals(internship))
                 {
                     if (created == null || app.getId() > created.getId())
                     {

@@ -56,11 +56,6 @@ public class CompanyRepresentative extends User
 
     }
 
-    @Override
-    public List<InternshipOpportunity> applyFilterSettings(FilterSettings filtersettings)
-    {
-        return List.of();
-    }
 
     public String getCompanyName() { return companyName; }
 

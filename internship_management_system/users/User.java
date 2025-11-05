@@ -1,10 +1,11 @@
-﻿package Assignment_1;
+﻿package internship_management_system.users;
 import java.util.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import internship_management_system.internships.InternshipOpportunity;
 import internship_management_system.enums.InternshipOpportunityStatus;
 import internship_management_system.enums.InternshipLevel;
+import internship_management_system.*;
 
 
 public abstract class User {
@@ -167,7 +168,7 @@ public abstract class User {
             throw new IllegalStateException("Editing opportunity status is not permitted for this user");
         }
         FilterSettings current = this.filtersettings;
-        Assignment_1.FilterSettings.Builder b = new Assignment_1.FilterSettings.Builder();
+        FilterSettings.Builder b = new FilterSettings.Builder();
         java.util.Set<internship_management_system.enums.InternshipOpportunityStatus> finalStatuses = (newStatuses != null) ? newStatuses : current.statuses();
         if (finalStatuses != null) {
             for (internship_management_system.enums.InternshipOpportunityStatus s : finalStatuses) { b.addStatus(s); }
@@ -190,7 +191,7 @@ public abstract class User {
             throw new IllegalStateException("Editing level is not permitted for this user");
         }
         FilterSettings current = this.filtersettings;
-        Assignment_1.FilterSettings.Builder b = new Assignment_1.FilterSettings.Builder();
+        FilterSettings.Builder b = new FilterSettings.Builder();
         if (current.statuses() != null) { for (internship_management_system.enums.InternshipOpportunityStatus s : current.statuses()) { b.addStatus(s); } }
         java.util.Set<internship_management_system.enums.InternshipLevel> finalLevels = (newLevels != null) ? newLevels : current.levels();
         if (finalLevels != null) { for (internship_management_system.enums.InternshipLevel l : finalLevels) { b.addLevel(l); } }
@@ -211,7 +212,7 @@ public abstract class User {
             throw new IllegalStateException("Editing majors is not permitted for this user");
         }
         FilterSettings current = this.filtersettings;
-        Assignment_1.FilterSettings.Builder b = new Assignment_1.FilterSettings.Builder();
+        FilterSettings.Builder b = new FilterSettings.Builder();
         if (current.statuses() != null) { for (internship_management_system.enums.InternshipOpportunityStatus s : current.statuses()) { b.addStatus(s); } }
         if (current.levels() != null) { for (internship_management_system.enums.InternshipLevel l : current.levels()) { b.addLevel(l); } }
         java.util.Set<String> finalMajors = (newMajors != null) ? newMajors : current.majors();
@@ -232,7 +233,7 @@ public abstract class User {
             throw new IllegalStateException("Editing visibility is not permitted for this user");
         }
         FilterSettings current = this.filtersettings;
-        Assignment_1.FilterSettings.Builder b = new Assignment_1.FilterSettings.Builder();
+        FilterSettings.Builder b = new FilterSettings.Builder();
         if (current.statuses() != null) { for (internship_management_system.enums.InternshipOpportunityStatus s : current.statuses()) { b.addStatus(s); } }
         if (current.levels() != null) { for (internship_management_system.enums.InternshipLevel l : current.levels()) { b.addLevel(l); } }
         if (current.majors() != null) { for (String m : current.majors()) { b.addMajor(m); } }
@@ -251,7 +252,7 @@ public abstract class User {
             throw new IllegalStateException("Editing closing dates is not permitted for this user");
         }
         FilterSettings current = this.filtersettings;
-        Assignment_1.FilterSettings.Builder b = new Assignment_1.FilterSettings.Builder();
+        FilterSettings.Builder b = new FilterSettings.Builder();
         if (current.statuses() != null) { for (internship_management_system.enums.InternshipOpportunityStatus s : current.statuses()) { b.addStatus(s); } }
         if (current.levels() != null) { for (internship_management_system.enums.InternshipLevel l : current.levels()) { b.addLevel(l); } }
         if (current.majors() != null) { for (String m : current.majors()) { b.addMajor(m); } }
@@ -270,7 +271,7 @@ public abstract class User {
             throw new IllegalStateException("Editing closing dates is not permitted for this user");
         }
         FilterSettings current = this.filtersettings;
-        Assignment_1.FilterSettings.Builder b = new Assignment_1.FilterSettings.Builder();
+        FilterSettings.Builder b = new FilterSettings.Builder();
         if (current.statuses() != null) { for (internship_management_system.enums.InternshipOpportunityStatus s : current.statuses()) { b.addStatus(s); } }
         if (current.levels() != null) { for (internship_management_system.enums.InternshipLevel l : current.levels()) { b.addLevel(l); } }
         if (current.majors() != null) { for (String m : current.majors()) { b.addMajor(m); } }
@@ -284,12 +285,12 @@ public abstract class User {
     // Inputs for sortBy:
     // - null: keep current sort order
     // - SortBy: set the sorting strategy
-    public void setSortBy(Assignment_1.FilterSettings.SortBy sortBy) {
+    public void setSortBy(FilterSettings.SortBy sortBy) {
         if (!getFilterEditCapabilities().getOrDefault("sort", true)) {
             throw new IllegalStateException("Editing sort is not permitted for this user");
         }
         FilterSettings current = this.filtersettings;
-        Assignment_1.FilterSettings.Builder b = new Assignment_1.FilterSettings.Builder();
+        FilterSettings.Builder b = new FilterSettings.Builder();
         if (current.statuses() != null) { for (internship_management_system.enums.InternshipOpportunityStatus s : current.statuses()) { b.addStatus(s); } }
         if (current.levels() != null) { for (internship_management_system.enums.InternshipLevel l : current.levels()) { b.addLevel(l); } }
         if (current.majors() != null) { for (String m : current.majors()) { b.addMajor(m); } }
