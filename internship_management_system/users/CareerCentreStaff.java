@@ -1,6 +1,9 @@
 package internship_management_system.users;
 import java.util.*;
 import java.util.stream.Collectors;
+import internship_management_system.*;
+import internship_management_system.enums.*;
+import internship_management_system.internships.*;
 
 public class CareerCentreStaff extends User {
     private String role;
@@ -164,8 +167,7 @@ public class CareerCentreStaff extends User {
 
     // Display comprehensive internship report (alphabetical by default)
     public void displayComprehensiveReport() {
-        FilterSettings filtersettings = new FilterSettings(); // default filters
-        List<InternshipOpportunity> opportunities = applyFilterSettings(filtersettings);
+        List<InternshipOpportunity> opportunities = applyFilterSettings();
 
         if (opportunities == null || opportunities.isEmpty()) {
             System.out.println("No internship opportunities found.");
@@ -183,6 +185,8 @@ public class CareerCentreStaff extends User {
     }
 
     // Apply filters (for now just default alphabetical order)
+
+    //I think this is not needed anymore? 
     @Override
     public List<InternshipOpportunity> applyFilterSettings(FilterSettings filtersettings) {
         return InternshipOpportunity.getOpportunitiesList("").stream()
