@@ -47,7 +47,7 @@ public class CompanyRepresentative extends User
 
         long existing = DataStorage.getInternships()
                                    .stream()
-                                   .filter(i -> i.getCompanyName().equals(companyName))
+                                   .filter(i -> i.getCompanyRep().getCompanyName().equals(companyName))
                                    .count();
 
         if (existing >= 5)
@@ -59,7 +59,7 @@ public class CompanyRepresentative extends User
         InternshipOpportunity internship = new InternshipOpportunity
                 (
                     id, title, description, major, level,
-                    openDate, closeDate, this.getName(), slots, visibility
+                    openDate, closeDate, this, slots, visibility
                 );
 
         DataStorage.addInternship(internship);
@@ -97,25 +97,25 @@ public class CompanyRepresentative extends User
                 .ifPresentOrElse(i ->
                 {
                     i.toggleVisibility();
-                    System.out.printf("Internship %d visibility toggled to %s.%n", internshipId, i.isVisible());
+                    System.out.printf("Internship %d visibility toggled to %s.%n", internshipId, i.getVisibility());
                 },
                 () -> System.out.println("Internship not found."));
     }
 
     // --- Filtering ---
-    @Override
     public List<InternshipOpportunity> saveAndApplyFilterInternship(FilterSettings filters)
     {
         // Example: Filter Logic using Streams
         return DataStorage.getInternships()
                           .stream()
-                          .filter(i -> i.getCompanyName().equals(companyName))
+                          .filter(i -> i.getCompanyRep().getCompanyName().equals(companyName))
                           .filter(i -> filters.matches(i))
                           .sorted(Comparator.comparing(InternshipOpportunity::getTitle))
                           .collect(Collectors.toList());
     }
 
     // --- Getters and Setters ---
+    public String getCompanyName() { return companyName; }
     public boolean isApproved() { return approved; }
     public void setApproved(boolean approved) { this.approved = approved; }
 }

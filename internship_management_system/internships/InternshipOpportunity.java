@@ -2,6 +2,8 @@ package internship_management_system.internships;
 
 import internship_management_system.enums.InternshipLevel;
 import internship_management_system.enums.InternshipOpportunityStatus;
+import internship_management_system.users.CompanyRepresentative;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -12,14 +14,14 @@ public class InternshipOpportunity
     private final InternshipLevel level;
     private final LocalDate openingDate, closingDate;
     private InternshipOpportunityStatus status;
-    private final String companyRep; // TODO: change later
+    private final CompanyRepresentative companyRep;
     private final int numOfSlots;
     private int numOfRemainingSlots;
     private boolean visibility;
 
     private static ArrayList<InternshipOpportunity> internshipOpportunities;
 
-    public InternshipOpportunity(int id, String title, String description, String preferredMajor, InternshipLevel level, LocalDate openingDate, LocalDate closingDate, String companyRep, int numOfSlots, boolean visibility)
+    public InternshipOpportunity(int id, String title, String description, String preferredMajor, InternshipLevel level, LocalDate openingDate, LocalDate closingDate, CompanyRepresentative companyRep, int numOfSlots, boolean visibility)
     {
         this.id = id;
         this.title = title;
@@ -35,7 +37,7 @@ public class InternshipOpportunity
         this.visibility = visibility;
     }
 
-    public static int addNewOpportunity(String title, String description, String preferredMajor, InternshipLevel level, LocalDate openingDate, LocalDate closingDate, String companyRep, int numOfSlots, boolean visibility)
+    public static int addNewOpportunity(String title, String description, String preferredMajor, InternshipLevel level, LocalDate openingDate, LocalDate closingDate, CompanyRepresentative companyRep, int numOfSlots, boolean visibility)
     {
         int id = internshipOpportunities.size();
         internshipOpportunities.add(new InternshipOpportunity(id, title, description, preferredMajor, level, openingDate, closingDate, companyRep, numOfSlots, visibility));
@@ -72,7 +74,7 @@ public class InternshipOpportunity
     public InternshipOpportunityStatus getStatus() {
         return status;
     }
-    public String getCompanyRep() {
+    public CompanyRepresentative getCompanyRep() {
         return companyRep;
     }
     public int getNumOfSlots() {

@@ -31,7 +31,7 @@ public class DataStorage
     public static Optional<CompanyRepresentative> findCompanyRepById(String id)
     {
         return companyReps.stream()
-                          .filter(r -> r.getId().equalsIgnoreCase(id))
+                          .filter(r -> r.getUserID().equalsIgnoreCase(id))
                           .findFirst();
     }
 }
