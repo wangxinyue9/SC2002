@@ -1,9 +1,11 @@
-package internship_management_system.users;
+﻿package internship_management_system.users;
 
 import internship_management_system.FilterSettings;
 import internship_management_system.internships.InternshipApplication;
 import internship_management_system.internships.InternshipOpportunity;
 import internship_management_system.enums.WithdrawStatus;
+import internship_management_system.enums.InternshipOpportunityStatus;
+import internship_management_system.enums.InternshipLevel;
 import java.util.*;
 
 public class Student extends User
@@ -18,25 +20,44 @@ public class Student extends User
 
     public Student(String id, String name, String password, int yearOfStudy, String major)
     {
-        super(id, name, password);
+        // User constructor is (name, userID, userPassword)
+        super(name, id, password);
 
         this.yearOfStudy = yearOfStudy;
         this.major = major;
         appliedInternships = new ArrayList<>();
         successfulInternships = new ArrayList<>();
         acceptedSomeOffer = false;
-        //should probably edit the filtersettings here too
+
+        // Initialize student-specific default filter settings using User's setters
+        // Only public opportunities
+        super.setVisibility(true);
+
+        // Status: APPROVED or FILLED
+        java.util.Set<InternshipOpportunityStatus> statuses = new java.util.HashSet<>();
+        statuses.add(InternshipOpportunityStatus.APPROVED);
+        statuses.add(InternshipOpportunityStatus.FILLED);
+        super.setOpportunityStatuses(statuses);
+
+        // Level by year of study
+        java.util.Set<InternshipLevel> levels = new java.util.HashSet<>();
+        if (this.yearOfStudy <= 2) {
+            levels.add(InternshipLevel.BASIC);
+        } else {
+            levels.add(InternshipLevel.BASIC);
+            levels.add(InternshipLevel.INTERMEDIATE);
+            levels.add(InternshipLevel.ADVANCED);
+        }
+        super.setLevels(levels);
+
+        // Major: student's own major (stored uppercase to match comparison logic)
+        if (this.major != null && !this.major.isEmpty()) {
+            java.util.Set<String> majors = new java.util.HashSet<>();
+            majors.add(this.major.toUpperCase());
+            super.setMajors(majors);
+        }
     }
 
-    @Override
-    public List<InternshipOpportunity> saveAndApplyFilterInternship(FilterSettings filtersettings)
-    {
-        //first apply the filter settings 
-        //then display the internships matching the filters 
-        //option for student to change the filters 
-        //when filters change, it auto saves in filter settings
-        return null;
-    }
 
     public void applyForInternship(InternshipOpportunity internship)
     {
@@ -50,7 +71,7 @@ public class Student extends User
         }
 
         // Create a new application via the opportunity API
-        internship.newApplication(getId()); // maybe should use the student object directly
+        internship.newApplication(getUserID()); // maybe should use the student object directly
 
         // Locate the newly created application from the global list
         InternshipApplication created = null;
@@ -59,7 +80,7 @@ public class Student extends User
         {
             for (InternshipApplication app : all)
             {
-                if (app.getStudent().equals(getId()) && app.getOpportunity().equals(internship))
+                if (app.getStudent().equals(getUserID()) && app.getOpportunity().equals(internship))
                 {
                     if (created == null || app.getId() > created.getId())
                     {
@@ -115,6 +136,17 @@ public class Student extends User
     public void toggleAcceptedSomeOffer(){
         acceptedSomeOffer = true;
     }
+    @Override
+    protected java.util.Map<String, Boolean> getFilterEditCapabilities() {
+        java.util.Map<String, Boolean> caps = new java.util.HashMap<>();
+        caps.put("opportunityStatus", true);
+        caps.put("level", false);
+        caps.put("majors", false);
+        caps.put("visibility", false);
+        caps.put("closingDates", true);
+        caps.put("sort", true);
+        return caps;
+    }
 }
 
 // User
@@ -126,11 +158,16 @@ public class Student extends User
 // Student
 
 // Initialize/configure filter settings for a student in the constructor.
-// Implement saveAndApplyFilterInternship to:
+// Implement applyFilterSettings to:
 // Apply current filters,
 // Display matching internships,
 // Allow changes to filters,
 // Auto-save updated filters
 // Consider refactoring application API to use Student object instead of userID when calling newApplication
-// Decide how to use or remove successfulInternships since it’s “not used right now.” 
+// Decide how to use or remove successfulInternships since it鈥檚 鈥渘ot used right now.鈥?
 // Ensure external flow (e.g., staff approval) calls removeAppliedInternship after withdraw approval to keep applied list in sync
+
+
+
+
+
