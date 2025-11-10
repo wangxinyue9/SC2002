@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e684ff78-b80c-465d-9fee-4662f7dc7ae4" name="Changes" comment="">
+    <list default="true" id="e684ff78-b80c-465d-9fee-4662f7dc7ae4" name="Changes" comment="chore: ignore IntelliJ project files">
       <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/internship_management_system/FilterSettings.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/internship_management_system/enums/InternshipApplicationStatus.java" afterDir="false" />
@@ -50,7 +50,6 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Merging career-centre-staff-edits",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/seren/OneDrive/Desktop/sc2002 project/SC2002",
