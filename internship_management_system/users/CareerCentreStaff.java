@@ -11,16 +11,16 @@ public class CareerCentreStaff extends User {
     private String email;
     private Scanner sc = new Scanner(System.in);
 
-    public CareerCentreStaff(String id, String name, String password,
-                             String role, String department, String email) {
-        super(id, name, password);
+    public CareerCentreStaff(int id, String userID, String name,
+                             String role, String department, String email) { // edited
+        super(id, name, userID);
         this.role = role;
         this.department = department;
         this.email = email;
     }
 
     // Login menu
-    @Override
+    /*@Override
     public void login() {
         int option;
         do {
@@ -192,6 +192,6 @@ public class CareerCentreStaff extends User {
         return InternshipOpportunity.getOpportunitiesList("").stream()
                 .sorted(Comparator.comparing(InternshipOpportunity::getTitle))
                 .collect(Collectors.toList());
-    }
+    }*/
 }
 

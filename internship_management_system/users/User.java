@@ -1,27 +1,38 @@
-﻿package internship_management_system.users;
+package internship_management_system.users;
 import java.util.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import internship_management_system.internships.InternshipOpportunity;
 import internship_management_system.enums.InternshipOpportunityStatus;
+import internship_management_system.filter.InternshipOpportunityFilterSettings;
 import internship_management_system.enums.InternshipLevel;
 import internship_management_system.*;
+import internship_management_system.filter.InternshipApplicationFilterSettings;
+import internship_management_system.internships.InternshipApplication;
 
 
 public abstract class User {
+    private int id; // Edited 
     private String userID;
     private String userPassword;
     private String name;
+    private final InternshipOpportunityFilterSettings opportunityFilterSettings; // Edited
+    private final InternshipApplicationFilterSettings applicationFilterSettings;
 
-    private FilterSettings filtersettings = new FilterSettings.Builder().sortBy(FilterSettings.SortBy.ALPHA).build();
+    // private FilterSettings filtersettings = new FilterSettings.Builder().sortBy(FilterSettings.SortBy.ALPHA).build();
 
-    public User(String name, String userID, String userPassword){
+
+    public User(int id, String name, String userID){ // Edited
+        this.id = id; //
         this.name = name; 
         this.userID = userID;
-        this.userPassword = userPassword;
+        this.userPassword = "password";
+        this.opportunityFilterSettings = new InternshipOpportunityFilterSettings();
+        this.applicationFilterSettings = new InternshipApplicationFilterSettings();
+        this.applicationFilterSettings.setOpportunityFilters(Optional.of(this.opportunityFilterSettings));
     }
 
-    public void login(){
+    /*public void login(){
         // NEED TO RETHINK HOW TO DO THIS IN MAIN APP
         //right now, only checks if the password is correct
         Scanner scanner = new Scanner(System.in);
@@ -35,13 +46,13 @@ public abstract class User {
             System.out.println("incorrect password, login unsuccessful");
         }
 
-    }
+    }*/
 
     public String getUserID(){
         return userID;
     }
 
-    public String getUserPasswrd(){
+    public String getUserPassword(){
         return userPassword;
     }
 
@@ -49,7 +60,17 @@ public abstract class User {
         return name;
     }
 
-    public void changePassword(){
+    public void changePassword(String password) {
+        this.userPassword = password;
+    }
+    public InternshipOpportunityFilterSettings getOpportunityFilterSettings() {
+        return this.opportunityFilterSettings;
+    }
+    public InternshipApplicationFilterSettings getApplicationFilterSettings() {
+        return this.applicationFilterSettings;
+    }
+
+    /*public void changePassword(){
         System.out.println("Old password: ");
         Scanner scanner = new Scanner(System.in);
         String oldPassword = scanner.nextLine();
@@ -61,10 +82,10 @@ public abstract class User {
         else {
             System.out.println("Incorrect password. Failed to change password.");
         }
-    }
+    }*/
 
 
-    public List<InternshipOpportunity> applyFilterSettings(FilterSettings filtersettings){
+    /*public List<InternshipOpportunity> applyFilterSettings(FilterSettings filtersettings){
         // get all opportunities
         List<InternshipOpportunity> all = internship_management_system.internships.InternshipOpportunity.getOpportunitiesList("");
         if (all == null) all = new ArrayList<>();
@@ -334,5 +355,5 @@ public abstract class User {
                     opportunity.getNumOfRemainingSlots()
             );
         }
-    }
+    }*/
 }

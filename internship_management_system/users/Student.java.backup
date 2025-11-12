@@ -1,16 +1,16 @@
 package internship_management_system.users;
 
-
+import internship_management_system.FilterSettings;
 import internship_management_system.internships.InternshipApplication;
 import internship_management_system.internships.InternshipOpportunity;
 import internship_management_system.enums.WithdrawStatus;
-import internship_management_system.filter.InternshipOpportunityFilterSettings;
 import internship_management_system.enums.InternshipOpportunityStatus;
 import internship_management_system.enums.InternshipLevel;
 import java.util.*;
 
 public class Student extends User
 {
+    
     private int yearOfStudy;
     private String major;
     private List<InternshipApplication> appliedInternships;
@@ -18,10 +18,10 @@ public class Student extends User
     private boolean acceptedSomeOffer;
 
 
-    public Student(int id, String userID, String name, int yearOfStudy, String major) // Edited
+    public Student(String id, String name, String password, int yearOfStudy, String major)
     {
         // User constructor is (name, userID, userPassword)
-        super(id, name, userID);
+        super(name, id, password);
 
         this.yearOfStudy = yearOfStudy;
         this.major = major;
@@ -29,22 +29,9 @@ public class Student extends User
         successfulInternships = new ArrayList<>();
         acceptedSomeOffer = false;
 
-        super.getOpportunityFilterSettings().toggleShowInvisible();
-        super.getOpportunityFilterSettings().toggleShowUnopened();
-        super.getOpportunityFilterSettings().toggleShowClosed();
-        super.getOpportunityFilterSettings().addPreferredMajor(major);
-        if(yearOfStudy <= 2) {
-            super.getOpportunityFilterSettings().toggleShowLevel(InternshipLevel.INTERMEDIATE);
-            super.getOpportunityFilterSettings().toggleShowLevel(InternshipLevel.ADVANCED);
-        }
-        super.getOpportunityFilterSettings().toggleShowStatus(InternshipOpportunityStatus.PENDING);
-        super.getOpportunityFilterSettings().toggleShowStatus(InternshipOpportunityStatus.REJECTED);
-        super.getOpportunityFilterSettings().toggleShowStatus(InternshipOpportunityStatus.FILLED);
-        super.getOpportunityFilterSettings().toggleShowInvisible();
-
         // Initialize student-specific default filter settings using User's setters
         // Only public opportunities
-        /*super.setVisibility(true);
+        super.setVisibility(true);
 
         // Status: APPROVED or FILLED
         java.util.Set<InternshipOpportunityStatus> statuses = new java.util.HashSet<>();
@@ -68,7 +55,7 @@ public class Student extends User
             java.util.Set<String> majors = new java.util.HashSet<>();
             majors.add(this.major.toUpperCase());
             super.setMajors(majors);
-        }*/
+        }
     }
 
     /* EDITED PART */
@@ -81,7 +68,7 @@ public class Student extends User
     /* EDITED PART */
 
 
-    /*public void applyForInternship(InternshipOpportunity internship)
+    public void applyForInternship(InternshipOpportunity internship)
     {
         // Prevent duplicate application based on the student's applied list
         for (InternshipApplication app : appliedInternships)
@@ -153,22 +140,12 @@ public class Student extends User
     {
         appliedInternships.remove(internshipApplication);
         //once the withdraw request is approved by the career staff, call this to remove from the applied list. 
-    }*/
-
-    /* EDITED PART */
-    // public void toggleAcceptedSomeOffer(){
-    //     acceptedSomeOffer = true;
-    // }
-
-    public void toggleAcceptedSomeOffer() {
-        acceptedSomeOffer = !acceptedSomeOffer;
     }
-    public boolean hasAcceptedSomeOffer() {
-        return  acceptedSomeOffer;
-    }
-    /* EDITED PART */
 
-    /*@Override
+    public void toggleAcceptedSomeOffer(){
+        acceptedSomeOffer = true;
+    }
+    @Override
     protected java.util.Map<String, Boolean> getFilterEditCapabilities() {
         java.util.Map<String, Boolean> caps = new java.util.HashMap<>();
         caps.put("opportunityStatus", true);
@@ -178,7 +155,7 @@ public class Student extends User
         caps.put("closingDates", true);
         caps.put("sort", true);
         return caps;
-    }*/
+    }
 }
 
 // User
