@@ -140,11 +140,29 @@ public class Main {
 
     static void loginScreen() {
         clearScreen();
-        printTitle("Login");
+        printTitle("Login / Register");
 
         if (currentUser.isPresent()) {
             throw new Error("Someone already logged in");
         }
+        System.out.println("1. Log in");
+        System.out.println("2. Register as a Company Representative");
+        System.out.println("e. Exit");
+        System.out.print("Please choose an option: ");
+        String option = sc.nextLine().trim().toLowerCase();
+
+        switch (option) {
+            case "1" -> loginExistingUser();
+            case "2" -> nextScreen = Main::companyRepRegisterScreen;
+            case "e" -> exit();
+            default -> nextScreen = Main::loginScreen;
+        }
+    }
+
+    static void loginExistingUser() {
+        clearScreen();
+        printTitle("Login");
+
         System.out.print("Username: ");
         String username = sc.nextLine().trim();
         System.out.print("Password: ");
@@ -166,6 +184,63 @@ public class Main {
         }else {
             nextScreen = Main::careerCenterStaffHomeScreen;
         }
+    }
+
+    static void companyRepRegisterScreen() {
+        clearScreen();
+        printTitle("Register as Company Representative");
+
+        System.out.print("Choose a user ID: ");
+        String userID = sc.nextLine().trim();
+        if (userID.isEmpty()) {
+            System.out.println("User ID cannot be empty.");
+            System.out.print("Press Enter to try again...");
+            sc.nextLine();
+            nextScreen = Main::companyRepRegisterScreen;
+            return;
+        }
+        if (DataStorage.getUserByUserID(userID).isPresent()) {
+            System.out.printf("User ID \"%s\" is already taken.%n", userID);
+            System.out.print("Press Enter to try again...");
+            sc.nextLine();
+            nextScreen = Main::companyRepRegisterScreen;
+            return;
+        }
+
+        System.out.print("Full name: ");
+        String name = sc.nextLine().trim();
+        System.out.print("Company name: ");
+        String companyName = sc.nextLine().trim();
+        System.out.print("Department: ");
+        String department = sc.nextLine().trim();
+        System.out.print("Position: ");
+        String position = sc.nextLine().trim();
+        if (name.isEmpty() || companyName.isEmpty() || department.isEmpty() || position.isEmpty()) {
+            System.out.println("All fields are required.");
+            System.out.print("Press Enter to try again...");
+            sc.nextLine();
+            nextScreen = Main::companyRepRegisterScreen;
+            return;
+        }
+
+        System.out.print("Create a password (min 6 characters): ");
+        String password = sc.nextLine();
+        if (password.length() < 6) {
+            System.out.println("Password must be at least 6 characters long.");
+            System.out.print("Press Enter to try again...");
+            sc.nextLine();
+            nextScreen = Main::companyRepRegisterScreen;
+            return;
+        }
+
+        CompanyRepresentative newRep = DataStorage.newCompanyRep(userID, name, companyName, department, position);
+        newRep.changePassword(password);
+        newRep.setStatus(CompanyRepresentativeStatus.PENDING);
+
+        System.out.println("\nRegistration submitted. A Career Centre Staff must approve your account before you can log in.");
+        System.out.print("Press Enter to return to login...");
+        sc.nextLine();
+        nextScreen = Main::loginScreen;
     }
 
     static void changePasswordScreen() {
