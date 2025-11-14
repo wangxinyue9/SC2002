@@ -59,6 +59,10 @@ public class InternshipApplication {
         return withdrawStatus;
     }
 
+    public PlacementConfirmationStatus getPlacementConfirmationStatus() {
+        return placementConfirmationStatus;
+    }
+
     public void finalizeApplicationStatus(boolean offerInternship) { // Only used by CompanyRep
         if (this.status != InternshipApplicationStatus.PENDING) {
             throw new Error("Application status already finalized");

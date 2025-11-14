@@ -1359,7 +1359,9 @@ public class Main {
     static void internshipOpportunityScreen() {
         if(!currentOpportunity.isPresent())
             throw new Error("No internship opportunity selected");
-
+        if (!currentUser.isPresent()) {
+            throw new Error("No user logged in");
+        }
         clearScreen();
         printTitle("Internship Opportunity");
 
@@ -1466,6 +1468,172 @@ public class Main {
     static void internshipApplicationScreen() {
         if(!currentApplication.isPresent())
             throw new Error("No internship application selected");
+        if(!currentUser.isPresent())
+            throw new Error("No user logged in");
+
+        InternshipApplication application = currentApplication.get();
+        clearScreen();
+        printTitle("Internship Application");
+
+        System.out.printf("Application ID: %d\n", application.getId());
+        System.out.printf("Student: %s (%s)\n",
+                application.getStudent().getName(),
+                application.getStudent().getUserID());
+        System.out.printf("Internship: %s\n", application.getOpportunity().getTitle());
+        System.out.printf("Status: %s\n", application.getStatus());
+        System.out.printf("Withdraw status: %s\n", application.getWithdrawStatus());
+        System.out.printf("Placement confirmation: %s\n\n", application.getPlacementConfirmationStatus());
+        System.out.println("Opportunity details:");
+        System.out.println(application.getOpportunity());
+        System.out.println("");
+
+        ArrayList<String> operations = new ArrayList<>();
+        ArrayList<Runnable> operationFunctions = new ArrayList<>();
+
+        if(currentUser.get() instanceof Student) {
+            Student student = (Student) currentUser.get();
+            if(!application.getStudent().equals(student))
+                throw new Error("Student cannot view another student's application");
+
+            if(application.getWithdrawStatus() == WithdrawStatus.NOT_REQUESTED
+                    && application.getStatus() != InternshipApplicationStatus.UNSUCCESSFUL) {
+                operations.add("Request to withdraw application");
+                operationFunctions.add(() -> {
+                    try {
+                        application.requestWithdraw();
+                        System.out.println("Withdraw request submitted. Await approval from Career Centre Staff.");
+                    } catch (Error e) {
+                        System.out.printf("Failed to submit withdraw request: %s%n", e.getMessage());
+                    }
+                    System.out.print("Press Enter to continue...");
+                    sc.nextLine();
+                    nextScreen = Main::internshipApplicationScreen;
+                });
+            } else if(application.getWithdrawStatus() == WithdrawStatus.PENDING) {
+                operations.add("Cancel withdraw request");
+                operationFunctions.add(() -> {
+                    application.confirmWithdraw(false);
+                    System.out.println("Withdraw request cancelled.");
+                    System.out.print("Press Enter to continue...");
+                    sc.nextLine();
+                    nextScreen = Main::internshipApplicationScreen;
+                });
+            }
+
+            if(application.getStatus() == InternshipApplicationStatus.SUCCESSFUL
+                    && application.getWithdrawStatus() != WithdrawStatus.APPROVED) {
+                if(application.getPlacementConfirmationStatus() == PlacementConfirmationStatus.PENDING) {
+                    operations.add("Accept offer");
+                    operationFunctions.add(() -> {
+                        try {
+                            application.confirmPlacement(true);
+                            System.out.println("Offer accepted.");
+                        } catch (Error e) {
+                            System.out.printf("Unable to accept offer: %s%n", e.getMessage());
+                        }
+                        System.out.print("Press Enter to continue...");
+                        sc.nextLine();
+                        nextScreen = Main::internshipApplicationScreen;
+                    });
+
+                    operations.add("Reject offer");
+                    operationFunctions.add(() -> {
+                        application.confirmPlacement(false);
+                        System.out.println("Offer rejected.");
+                        System.out.print("Press Enter to continue...");
+                        sc.nextLine();
+                        nextScreen = Main::internshipApplicationScreen;
+                    });
+                }
+            }
+        } else if(currentUser.get() instanceof CompanyRepresentative) {
+            CompanyRepresentative cr = (CompanyRepresentative) currentUser.get();
+            if(!application.getOpportunity().getCompanyRep().equals(cr))
+                throw new Error("Company Representative cannot manage other companies' applications");
+
+            if(application.getStatus() == InternshipApplicationStatus.PENDING
+                    && application.getWithdrawStatus() != WithdrawStatus.APPROVED) {
+                operations.add("Offer internship to student");
+                operationFunctions.add(() -> {
+                    try {
+                        application.finalizeApplicationStatus(true);
+                        System.out.println("Application marked successful.");
+                    } catch (Error e) {
+                        System.out.printf("Unable to offer internship: %s%n", e.getMessage());
+                    }
+                    System.out.print("Press Enter to continue...");
+                    sc.nextLine();
+                    nextScreen = Main::internshipApplicationScreen;
+                });
+
+                operations.add("Reject application");
+                operationFunctions.add(() -> {
+                    try {
+                        application.finalizeApplicationStatus(false);
+                        System.out.println("Application rejected.");
+                    } catch (Error e) {
+                        System.out.printf("Unable to reject application: %s%n", e.getMessage());
+                    }
+                    System.out.print("Press Enter to continue...");
+                    sc.nextLine();
+                    nextScreen = Main::internshipApplicationScreen;
+                });
+            }
+        } else if(currentUser.get() instanceof CareerCentreStaff) {
+            if(application.getWithdrawStatus() == WithdrawStatus.PENDING) {
+                operations.add("Approve withdraw request");
+                operationFunctions.add(() -> {
+                    application.confirmWithdraw(true);
+                    System.out.println("Withdrawal approved.");
+                    System.out.print("Press Enter to continue...");
+                    sc.nextLine();
+                    nextScreen = Main::internshipApplicationScreen;
+                });
+
+                operations.add("Reject withdraw request");
+                operationFunctions.add(() -> {
+                    application.confirmWithdraw(false);
+                    System.out.println("Withdrawal rejected.");
+                    System.out.print("Press Enter to continue...");
+                    sc.nextLine();
+                    nextScreen = Main::internshipApplicationScreen;
+                });
+            }
+        }
+
+        for(int i = 0; i < operations.size(); i++) {
+            System.out.printf("%d. %s\n", i+1, operations.get(i));
+        }
+        System.out.println("0. Go back");
+        System.out.print("Please choose an operation: ");
+        String input = sc.nextLine().trim();
+
+        Screen backScreen;
+        if(currentOpportunity.isPresent()) {
+            backScreen = Main::internshipOpportunityScreen;
+        } else if(currentUser.get() instanceof Student) {
+            backScreen = Main::studentHomeScreen;
+        } else if(currentUser.get() instanceof CompanyRepresentative) {
+            backScreen = Main::companyRepHomeScreen;
+        } else {
+            backScreen = Main::careerCenterStaffHomeScreen;
+        }
+
+        if(input.equals("0")) {
+            nextScreen = backScreen;
+            return;
+        }
+        try {
+            int op = Integer.parseInt(input);
+            if(op < 1 || op > operationFunctions.size()) {
+                nextScreen = Main::internshipApplicationScreen;
+            } else {
+                operationFunctions.get(op - 1).run();
+            }
+        } catch (NumberFormatException e) {
+            nextScreen = Main::internshipApplicationScreen;
+        }
     }
+
 
 }
