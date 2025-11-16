@@ -28,8 +28,7 @@ public abstract class User {
         this.userID = userID;
         this.userPassword = "password";
         this.opportunityFilterSettings = new InternshipOpportunityFilterSettings();
-        this.applicationFilterSettings = new InternshipApplicationFilterSettings();
-        this.applicationFilterSettings.setOpportunityFilters(Optional.of(this.opportunityFilterSettings));
+        this.applicationFilterSettings = new InternshipApplicationFilterSettings(this.opportunityFilterSettings);
     }
 
     /*public void login(){
@@ -52,8 +51,11 @@ public abstract class User {
         return userID;
     }
 
-    public String getUserPassword(){
+    /*public String getUserPassword(){
         return userPassword;
+    }*/
+    public boolean validatePassword(String password){
+        return this.userPassword.equals(password);
     }
 
     public String getName(){

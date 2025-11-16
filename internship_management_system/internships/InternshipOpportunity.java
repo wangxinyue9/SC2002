@@ -173,7 +173,7 @@ public class InternshipOpportunity {
         if (filter.getPreferredMajors().isPresent() && !filter.getPreferredMajors().get().contains(this.preferredMajor)) {
             return false;
         }
-        if (filter.getOpensAfter().isPresent() && this.openingDate.isBefore(filter.getOpensAfter().get())) {
+        if (filter.getClosesAfter().isPresent() && this.closingDate.isBefore(filter.getClosesAfter().get())) {
             return false;
         }
         if (filter.getClosesBefore().isPresent() && this.closingDate.isAfter(filter.getClosesBefore().get())) {
@@ -191,7 +191,7 @@ public class InternshipOpportunity {
         if (this.visibility && !filter.isShowVisible()) {
             return false;
         }
-        if (!this.visibility && !filter.isShowInvisible()) {
+        if (!this.visibility && !filter.isShowHidden()) {
             return false;
         }
         if (this.openingDate.isAfter(LocalDate.now()) && !filter.isShowUnopened()) {

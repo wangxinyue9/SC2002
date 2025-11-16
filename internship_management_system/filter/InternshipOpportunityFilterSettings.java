@@ -8,24 +8,24 @@ import java.util.Optional;
 
 public class InternshipOpportunityFilterSettings {
     private Optional<HashSet<String>> preferredMajors;
-    private Optional<LocalDate> opensAfter, closesBefore;
+    private Optional<LocalDate> closesAfter, closesBefore;
     private Optional<HashSet<String>> companies;
     private final boolean[] showLevel;
     private final boolean[] showStatus;
     private boolean showVisible;
-    private boolean showInvisible;
+    private boolean showHidden;
     private boolean showUnopened;
     private boolean showClosed;
 
     public InternshipOpportunityFilterSettings() {
         this.preferredMajors = Optional.empty();
-        this.opensAfter = Optional.empty();
+        this.closesAfter = Optional.empty();
         this.closesBefore = Optional.empty();
         this.companies = Optional.empty();
         this.showLevel = new boolean[]{true, true, true}; // basic, intermediate, advanced
         this.showStatus = new boolean[]{true, true, true, true}; // pending, approved, rejected, filled
         this.showVisible = true;
-        this.showInvisible = true;
+        this.showHidden = true;
         this.showUnopened = true;
         this.showClosed = true;
     }
@@ -34,8 +34,8 @@ public class InternshipOpportunityFilterSettings {
     public Optional<HashSet<String>> getPreferredMajors() {
         return preferredMajors;
     }
-    public Optional<LocalDate> getOpensAfter() {
-        return opensAfter;
+    public Optional<LocalDate> getClosesAfter() {
+        return closesAfter;
     }
     public Optional<LocalDate> getClosesBefore() {
         return closesBefore;
@@ -52,8 +52,8 @@ public class InternshipOpportunityFilterSettings {
     public boolean isShowVisible() {
         return showVisible;   
     }
-    public boolean isShowInvisible() {
-        return showInvisible;
+    public boolean isShowHidden() {
+        return showHidden;
     }
     public boolean isShowUnopened() {
         return showUnopened;
@@ -68,8 +68,8 @@ public class InternshipOpportunityFilterSettings {
         }
         this.preferredMajors.get().add(major);  
     }
-    public void setOpensAfter(LocalDate date) {
-        this.opensAfter = Optional.of(date);
+    public void setClosesAfter(LocalDate date) {
+        this.closesAfter = Optional.of(date);
     }
     public void setClosesBefore(LocalDate date) {
         this.closesBefore = Optional.of(date);
@@ -89,8 +89,8 @@ public class InternshipOpportunityFilterSettings {
     public void toggleShowVisible() {
         this.showVisible = !this.showVisible;
     }
-    public void toggleShowInvisible() {
-        this.showInvisible = !this.showInvisible;
+    public void toggleShowHidden() {
+        this.showHidden = !this.showHidden;
     }
     public void toggleShowUnopened() {
         this.showUnopened = !this.showUnopened;
@@ -116,8 +116,8 @@ public class InternshipOpportunityFilterSettings {
     public void resetCompanies() {
         this.companies = Optional.empty();
     }
-    public void resetOpensAfter() {
-        this.opensAfter = Optional.empty();
+    public void resetClosesAfter() {
+        this.closesAfter = Optional.empty();
     }
     public void resetClosesBefore() {
         this.closesBefore = Optional.empty();

@@ -132,8 +132,8 @@ public class InternshipApplication {
         if (!filter.isShowPlacementConfirmationStatus(this.placementConfirmationStatus)) {
             return false;
         }
-        if (filter.getOpportunityFilters().isPresent()) {
-            return this.opportunity.matchesFilter(filter.getOpportunityFilters().get());
+        if (filter.isUseOpportunityFilters()) {
+            return this.opportunity.matchesFilter(filter.getOpportunityFilters());
         }
         return true;
     }

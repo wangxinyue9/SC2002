@@ -29,7 +29,7 @@ public class Student extends User
         successfulInternships = new ArrayList<>();
         acceptedSomeOffer = false;
 
-        super.getOpportunityFilterSettings().toggleShowInvisible();
+        super.getOpportunityFilterSettings().toggleShowHidden();
         super.getOpportunityFilterSettings().toggleShowUnopened();
         super.getOpportunityFilterSettings().toggleShowClosed();
         super.getOpportunityFilterSettings().addPreferredMajor(major);
@@ -40,7 +40,7 @@ public class Student extends User
         super.getOpportunityFilterSettings().toggleShowStatus(InternshipOpportunityStatus.PENDING);
         super.getOpportunityFilterSettings().toggleShowStatus(InternshipOpportunityStatus.REJECTED);
         super.getOpportunityFilterSettings().toggleShowStatus(InternshipOpportunityStatus.FILLED);
-        super.getOpportunityFilterSettings().toggleShowInvisible();
+        super.getOpportunityFilterSettings().toggleShowHidden();
 
         // Initialize student-specific default filter settings using User's setters
         // Only public opportunities
