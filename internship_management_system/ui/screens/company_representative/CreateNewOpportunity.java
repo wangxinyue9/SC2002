@@ -2,10 +2,10 @@ package internship_management_system.ui.screens.company_representative;
 
 import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
-import internship_management_system.Model.DataStorage;
 import internship_management_system.enums.CompanyRepresentativeStatus;
 import internship_management_system.enums.InternshipLevel;
 import internship_management_system.internships.InternshipOpportunity;
+import internship_management_system.model.DataStorage;
 import internship_management_system.ui.IO;
 import internship_management_system.users.CompanyRepresentative;
 
@@ -114,8 +114,8 @@ public class CreateNewOpportunity implements Screen {
         System.out.println("Internship opportunity created with ID: " + io.getId());
         System.out.print("Press any button to continue...");
         IO.getScanner().nextLine();
-        
-        // TODO: Notify career center staff for approval
-        return Optional.empty();
+
+        uiState.setCurrentOpportunity(Optional.of(io));
+        return Optional.of(CROpportunityScreen.INSTANCE);
     }    
 }

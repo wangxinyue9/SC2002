@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.Optional;
 import java.util.Scanner;
 
-import internship_management_system.Model.DataStorage;
+import internship_management_system.model.DataStorage;
 import internship_management_system.ui.screens.HomeScreen;
 import java.util.ArrayList;
 
@@ -35,7 +35,14 @@ public class UIManager {
         screens.add(HomeScreen.INSTANCE);
         while(!screens.isEmpty()) {
             Screen currentScreen = screens.get(screens.size() - 1);
-            Optional<Screen> nextScreen = currentScreen.show(uiState);
+            Optional<Screen> nextScreen;
+            try {
+                nextScreen = currentScreen.show(uiState);   
+            } catch (Exception e) {
+                System.err.println("An unexpected error occurred: " + e);
+                System.exit(1);
+                return;
+            }
             if (nextScreen.isPresent()) {
                 if (nextScreen.get().equals(currentScreen)) {
                     continue;
@@ -63,8 +70,7 @@ public class UIManager {
                     continue;
                 }
                 String[] lineData = line.split(",");
-                DataStorage.newStudent(lineData[0], lineData[1], Integer.parseInt(lineData[3]), lineData[2]); // StudentID,Name,Major,Year,Email
-                // FIXME: student email is unused
+                DataStorage.newStudent(lineData[0], lineData[1], Integer.parseInt(lineData[3]), lineData[2], lineData[4]); // StudentID,Name,Major,Year,Email
             }
             sc2.close();
         } catch (FileNotFoundException | NumberFormatException | ArrayIndexOutOfBoundsException e) {
@@ -81,8 +87,7 @@ public class UIManager {
                     continue;
                 }
                 String[] lineData = line.split(",");
-                DataStorage.newCompanyRep(lineData[0], lineData[1], lineData[2], lineData[3], lineData[4]); // CompanyRepID,Name,CompanyName,Department,Position,Email,Status
-                // FIXME: status is unused
+                DataStorage.newCompanyRep(lineData[1], lineData[2], lineData[3], lineData[4]); // CompanyRepID,Name,CompanyName,Department,Position, Email,Status
             }
             sc2.close();
         } catch (FileNotFoundException | NumberFormatException | ArrayIndexOutOfBoundsException e) {
@@ -99,7 +104,7 @@ public class UIManager {
                     continue;
                 }
                 String[] lineData = line.split(",");
-                DataStorage.newCareerCentreStaff(lineData[0], lineData[1], lineData[2], lineData[3], lineData[4]); // StaffID,Name,Role,Department,Email
+                DataStorage.newCareerCentreStaff(lineData[0], lineData[1], lineData[3], lineData[4]); // StaffID,Name,Role,Department,Email
             }
             sc2.close();
         } catch (FileNotFoundException | NumberFormatException | ArrayIndexOutOfBoundsException e) {

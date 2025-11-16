@@ -1,11 +1,14 @@
 package internship_management_system.ui.screens;
 
-import internship_management_system.Model.DataStorage;
 import internship_management_system.internships.InternshipOpportunity;
+import internship_management_system.model.DataStorage;
 import internship_management_system.ui.IO;
 import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
+import internship_management_system.ui.screens.career_center_staff.CCSOpportunityScreen;
+import internship_management_system.ui.screens.company_representative.CROpportunityScreen;
 import internship_management_system.ui.screens.company_representative.CreateNewOpportunity;
+import internship_management_system.ui.screens.student.StudentOpportunityScreen;
 import internship_management_system.users.CompanyRepresentative;
 import internship_management_system.users.Student;
 import internship_management_system.users.User;
@@ -39,21 +42,21 @@ public class InternshipOpportunityList implements Screen {
 
         if (opportunities.isEmpty()) {
             System.out.println("No internship opportunities available.");
-            System.out.print("Press any button to go back...");
-            IO.getScanner().nextLine();
-            return Optional.empty();
         }
-
-        System.out.println("Available Internship Opportunities:");
-        for (int i = 0; i < opportunities.size(); i++) {
-            InternshipOpportunity opp = opportunities.get(i);
-            System.out.println((i + 1) + ". " + opp);
+        else {
+            System.out.println("Available Internship Opportunities:");
+            System.out.println();
+            for (int i = 0; i < opportunities.size(); i++) {
+                InternshipOpportunity opp = opportunities.get(i);
+                System.out.println((i + 1) + ". " + opp);
+                System.out.println();
+            }
         }
         
         System.out.print("");
-        if(user instanceof CompanyRepresentative) System.out.print("Type internship opportunity ID to manage, '+' to create new or 0 to go back: ");
-        else if(user instanceof Student) System.out.print("Type internship opportunity ID to view, or 0 to go back: ");
-        else System.out.print("Type internship opportunity ID to manage, or 0 to go back: ");
+        if(user instanceof CompanyRepresentative) System.out.print("Type internship opportunity row number (not id) to manage, '+' to create new or 0 to go back: ");
+        else if(user instanceof Student) System.out.print("Type internship opportunity row number (not id) to view, or 0 to go back: ");
+        else System.out.print("Type internship opportunity row number (not id) to manage, or 0 to go back: ");
 
         String input = IO.getScanner().nextLine().trim();
 
@@ -69,8 +72,18 @@ public class InternshipOpportunityList implements Screen {
             if (choice < 1 || choice > opportunities.size()) {
                 return Optional.of(InternshipOpportunityList.INSTANCE);
             }
-            // TODO: select opportunity
-            return Optional.of(InternshipOpportunityList.INSTANCE);
+            if(user instanceof Student) {
+                uiState.setCurrentOpportunity(Optional.of(opportunities.get(choice - 1)));
+                return Optional.of(StudentOpportunityScreen.INSTANCE);
+            }
+            else if(user instanceof CompanyRepresentative) {
+                uiState.setCurrentOpportunity(Optional.of(opportunities.get(choice - 1)));
+                return Optional.of(CROpportunityScreen.INSTANCE);
+            }
+            else {
+                uiState.setCurrentOpportunity(Optional.of(opportunities.get(choice - 1)));
+                return Optional.of(CCSOpportunityScreen.INSTANCE);
+            }
         } catch (NumberFormatException e) {
             return Optional.of(InternshipOpportunityList.INSTANCE);
         }

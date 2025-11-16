@@ -4,7 +4,8 @@ import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
 import internship_management_system.ui.IO;
 import internship_management_system.ui.screens.career_center_staff.ManageCRApplications;
-import internship_management_system.ui.screens.filters.EditOpportunityFilter;
+import internship_management_system.ui.screens.filters.application.EditApplicationFilter;
+import internship_management_system.ui.screens.filters.opportunity.EditOpportunityFilter;
 import internship_management_system.users.CareerCentreStaff;
 import java.util.Optional;
 
@@ -37,6 +38,8 @@ public class CareerCentreStaffHome implements Screen {
             "Edit internship application filter settings",
             "Manage company representative applications",
             "Manage internship opportunities",
+            "Manage internship applications",
+            "Generate report"
         };
         for (int i = 0; i < operations.length; i++) {
             System.out.printf("%d. %s\n", i + 1, operations[i]);
@@ -55,15 +58,20 @@ public class CareerCentreStaffHome implements Screen {
                 return Optional.of(EditOpportunityFilter.INSTANCE);
             }
             case "3" -> {
-                // TODO: tbi
-                return Optional.of(CareerCentreStaffHome.INSTANCE);
+                return Optional.of(EditApplicationFilter.INSTANCE);
             }
             case "4" -> {
                 return Optional.of(ManageCRApplications.INSTANCE);
             }
             case "5" -> {
-                // TODO: tbi
-                return Optional.of(CareerCentreStaffHome.INSTANCE);
+                return Optional.of(InternshipOpportunityList.INSTANCE);
+            }
+            case "6" -> {
+                return Optional.of(InternshipApplicationList.INSTANCE);
+            }
+            case "7" -> {
+                // TODO: Generate report screen
+                return Optional.of(INSTANCE);
             }
             case "0" -> {
                 uiState.setCurrentUser(Optional.empty());

@@ -11,7 +11,7 @@ import java.util.function.Consumer;
  * Specialized screen for editable lists.
  */
 
-interface FilterSettingsEditableListScreen extends Screen {
+public interface FilterSettingsEditableListScreen extends Screen {
     /**
      * Handles the editing of a list of items for filter settings.
      * @param name The name of the list being edited

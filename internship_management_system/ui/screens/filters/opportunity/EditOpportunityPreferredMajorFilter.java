@@ -1,6 +1,7 @@
-package internship_management_system.ui.screens.filters;
+package internship_management_system.ui.screens.filters.opportunity;
 import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
+import internship_management_system.ui.screens.filters.FilterSettingsEditableListScreen;
 import internship_management_system.users.User;
 import internship_management_system.filter.InternshipOpportunityFilterSettings;
 import internship_management_system.ui.IO;
@@ -23,7 +24,7 @@ public class EditOpportunityPreferredMajorFilter implements FilterSettingsEditab
             IO.exitWithError("User not logged in");
         }
         IO.clearConsole();
-        printTitle("Edit Preferred Majors", uiState);
+        printTitle("Opportunity Filter Setting - Preferred Majors Filter", uiState);
 
         User user = uiState.getCurrentUser().get();
         InternshipOpportunityFilterSettings settings = user.getOpportunityFilterSettings();

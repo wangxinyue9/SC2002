@@ -2,9 +2,10 @@ package internship_management_system.ui.screens;
 
 import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
+import internship_management_system.ui.screens.filters.opportunity.EditOpportunityFilter;
 import internship_management_system.enums.CompanyRepresentativeStatus;
 import internship_management_system.ui.IO;
-import internship_management_system.ui.screens.filters.EditOpportunityFilter;
+import internship_management_system.ui.screens.filters.application.EditApplicationFilter;
 import internship_management_system.users.CompanyRepresentative;
 import java.util.Optional;
 
@@ -50,7 +51,9 @@ public class CompanyRepHome implements Screen {
             "Change password",
             "Edit internship opportunity filter settings",
             "Edit internship application filter settings",
-            "Manage internship opportunities",};
+            "Manage internship opportunities",
+            "Manage internship applications"
+        };
         for (int i = 0; i < operations.length; i++) {
             System.out.printf("%d. %s\n", i + 1, operations[i]);
         }
@@ -68,12 +71,13 @@ public class CompanyRepHome implements Screen {
                 return Optional.of(EditOpportunityFilter.INSTANCE);
             }
             case "3" -> {
-                // TODO: tbi
-                return Optional.of(CompanyRepHome.INSTANCE);
+                return Optional.of(EditApplicationFilter.INSTANCE);
             }
             case "4" -> {
-                // TODO: tbi
-                return Optional.of(CompanyRepHome.INSTANCE);
+                return Optional.of(InternshipOpportunityList.INSTANCE);
+            }
+            case "5" -> {
+                return Optional.of(InternshipApplicationList.INSTANCE);
             }
             case "0" -> {
                 uiState.setCurrentUser(Optional.empty());

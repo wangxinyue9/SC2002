@@ -1,9 +1,13 @@
 package internship_management_system.enums;
 
 /**
- *
- * @author jarif
+ * Enum representing the placement confirmation status
  */
 public enum PlacementConfirmationStatus {
-    PENDING, ACCEPTED, REJECTED
+    /** Placement confirmation is pending */
+    PENDING,
+    /** Student has accepted the placement */
+    ACCEPTED,
+    /** Student has rejected the placement */
+    REJECTED
 }

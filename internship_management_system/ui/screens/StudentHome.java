@@ -2,8 +2,9 @@ package internship_management_system.ui.screens;
 
 import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
+import internship_management_system.ui.screens.filters.opportunity.EditOpportunityFilter;
 import internship_management_system.ui.IO;
-import internship_management_system.ui.screens.filters.EditOpportunityFilter;
+import internship_management_system.ui.screens.filters.application.EditApplicationFilter;
 import internship_management_system.users.Student;
 import java.util.Optional;
 
@@ -11,19 +12,21 @@ import java.util.Optional;
  * Student's home screen
  */
 public class StudentHome implements Screen {
+
     public static final StudentHome INSTANCE = new StudentHome();
 
     /**
      * Private constructor to enforce singleton pattern
      */
-    private StudentHome() {}
+    private StudentHome() {
+    }
 
     @Override
     public Optional<Screen> show(UIState uiState) {
-        if(!uiState.getCurrentUser().isPresent()) {
+        if (!uiState.getCurrentUser().isPresent()) {
             IO.exitWithError("User not logged in");
         }
-        if(!(uiState.getCurrentUser().get() instanceof Student)) {
+        if (!(uiState.getCurrentUser().get() instanceof Student)) {
             IO.exitWithError("Current user is not a student");
         }
 
@@ -35,7 +38,8 @@ public class StudentHome implements Screen {
             "Edit internship opportunity filter settings",
             "Edit internship application filter settings",
             "Show all internship opportunities",
-            "Show my internship applications",};
+            "Show my internship applications"
+        };
         for (int i = 0; i < operations.length; i++) {
             System.out.printf("%d. %s\n", i + 1, operations[i]);
         }
@@ -53,16 +57,13 @@ public class StudentHome implements Screen {
                 return Optional.of(EditOpportunityFilter.INSTANCE);
             }
             case "3" -> {
-                // TODO: TBI
-                return Optional.of(StudentHome.INSTANCE);
+                return Optional.of(EditApplicationFilter.INSTANCE);
             }
             case "4" -> {
-                // TODO: TBI
-                return Optional.of(StudentHome.INSTANCE);
+                return Optional.of(InternshipOpportunityList.INSTANCE);
             }
             case "5" -> {
-                // TODO: TBI
-                return Optional.of(StudentHome.INSTANCE);
+                return Optional.of(InternshipApplicationList.INSTANCE);
             }
             case "0" -> {
                 uiState.setCurrentUser(Optional.empty());

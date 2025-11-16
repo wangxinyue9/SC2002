@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import internship_management_system.Model.DataStorage;
 import internship_management_system.enums.CompanyRepresentativeStatus;
+import internship_management_system.model.DataStorage;
 import internship_management_system.ui.IO;
 import internship_management_system.users.CareerCentreStaff;
 import internship_management_system.users.CompanyRepresentative;

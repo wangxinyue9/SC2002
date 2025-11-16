@@ -1,15 +1,16 @@
 package internship_management_system.internships;
 
-import internship_management_system.Model.DataStorage;
 import internship_management_system.enums.InternshipLevel;
 import internship_management_system.enums.InternshipOpportunityStatus;
-import internship_management_system.enums.WithdrawStatus;
 import internship_management_system.filter.InternshipOpportunityFilterSettings;
 import internship_management_system.users.CompanyRepresentative;
-import internship_management_system.users.Student;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
+/**
+ * Class representing an internship opportunity
+ */
 public class InternshipOpportunity {
 
     private final int id;
@@ -22,8 +23,23 @@ public class InternshipOpportunity {
     private int numOfRemainingSlots;
     private boolean visibility;
 
-    // private static ArrayList<InternshipOpportunity> internshipOpportunities;
-
+    /**
+     * Constructor for InternshipOpportunity
+     *
+     * @param id The ID of the internship opportunity, also the index in the
+     * DataStorage list
+     * @param title The title of the internship opportunity
+     * @param description The description of the internship opportunity
+     * @param preferredMajor The preferred major for the internship opportunity
+     * @param level The level of the internship opportunity
+     * @param openingDate The opening date of the internship opportunity
+     * @param closingDate The closing date of the internship opportunity
+     * @param companyRep The company representative associated with the
+     * internship opportunity
+     * @param numOfSlots The number of slots available for the internship
+     * opportunity
+     * @param visibility The visibility status of the internship opportunity
+     */
     public InternshipOpportunity(int id, String title, String description, String preferredMajor, InternshipLevel level, LocalDate openingDate, LocalDate closingDate, CompanyRepresentative companyRep, int numOfSlots, boolean visibility) {
         this.id = id;
         this.title = title;
@@ -39,129 +55,166 @@ public class InternshipOpportunity {
         this.visibility = visibility;
     }
 
-    /*public static int addNewOpportunity(String title, String description, String preferredMajor, InternshipLevel level, LocalDate openingDate, LocalDate closingDate, CompanyRepresentative companyRep, int numOfSlots, boolean visibility) {
-        int id = internshipOpportunities.size();
-        internshipOpportunities.add(new InternshipOpportunity(id, title, description, preferredMajor, level, openingDate, closingDate, companyRep, numOfSlots, visibility));
-        return id;
-    }*/
-
-    /*public static ArrayList<InternshipOpportunity> getOpportunitiesList(String filter) {
-        // TODO: Do filtering here
-        return internshipOpportunities;
-    }*/
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         String lvl, statusString;
         lvl = switch (this.level) {
-            case BASIC -> "basic";
-            case INTERMEDIATE -> "intermediate";
-            default -> "advanced";
+            case BASIC ->
+                "basic";
+            case INTERMEDIATE ->
+                "intermediate";
+            default ->
+                "advanced";
         };
         statusString = switch (this.status) {
-            case PENDING -> "pending";
-            case APPROVED -> "approved";
-            case REJECTED -> "rejected";
-            default -> "filled";
+            case PENDING ->
+                "PENDING";
+            case APPROVED ->
+                "APPROVED";
+            case REJECTED ->
+                "REJECTED";
+            default ->
+                "FILLED";
         };
 
-        return this.id + "\n" + this.title + "\n" + this.description + "\n"
-            + "Company: " + this.companyRep.getCompanyName() + "\tSlots: " + numOfSlots + "\n"
-            + "Preferred Major: " + this.preferredMajor + "\tLevel: " + lvl + "\tStatus: " + statusString + "\n"
-            + "Opening Date: " + openingDate + "\tClosing Date: " + closingDate;
+        ArrayList<String> extra = new ArrayList<>();
+        if (this.status != InternshipOpportunityStatus.APPROVED) {
+            extra.add("[" + statusString + "]");
+        }
+        if (!this.visibility) {
+            extra.add("[HIDDEN]");
+        }
+        if (this.openingDate.isAfter(LocalDate.now())) {
+            extra.add("[NOT OPENED]");
+        }
+        if (this.closingDate.isBefore(LocalDate.now())) {
+            extra.add("[CLOSED]");
+        }
+        String extraInfo = String.join(" ", extra);
+
+        return "(id = " + this.id + ") " + this.title + "\n"
+                + this.description + "\n"
+                + "Company: " + this.companyRep.getCompanyName() + "\tSlots: " + numOfSlots + "\n"
+                + "Preferred Major: " + this.preferredMajor + "\tLevel: " + lvl + "\n"
+                + "Opening Date: " + openingDate + "\tClosing Date: " + closingDate
+                + (extraInfo.isEmpty() ? "" : "\n" + extraInfo);
     }
 
+    /**
+     * @return the id of the internship opportunity
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * @return the title of the internship opportunity
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * @return the description of the internship opportunity
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * @return the preferred major for the internship opportunity
+     */
     public String getPreferredMajor() {
         return preferredMajor;
     }
 
+    /**
+     * @return the level of the internship opportunity
+     */
     public InternshipLevel getInternshipLevel() {
         return level;
     }
 
+    /**
+     * @return the opening date of the internship opportunity
+     */
     public LocalDate getOpeningDate() {
         return openingDate;
     }
 
+    /**
+     * @return the closing date of the internship opportunity
+     */
     public LocalDate getClosingDate() {
         return closingDate;
     }
 
+    /**
+     * @return the status of the internship opportunity
+     */
     public InternshipOpportunityStatus getStatus() {
         return status;
     }
 
+    /**
+     * @return the company representative associated with the internship
+     * opportunity
+     */
     public CompanyRepresentative getCompanyRep() {
         return companyRep;
     }
 
+    /**
+     * @return the number of slots available for the internship opportunity
+     */
     public int getNumOfSlots() {
         return numOfSlots;
     }
 
+    /**
+     * @return the number of remaining slots for the internship opportunity
+     */
     public int getNumOfRemainingSlots() {
         return numOfRemainingSlots;
     }
 
+    /**
+     * @return the visibility status of the internship opportunity
+     */
     public boolean getVisibility() {
         return visibility;
     }
 
+    /**
+     * @param status The new status of the internship opportunity
+     */
     public void setStatus(InternshipOpportunityStatus status) {
         this.status = status;
     }
 
+    /**
+     * Toggle the visibility status of the internship opportunity
+     */
     public void toggleVisibility() {
         this.visibility = !this.visibility;
     }
 
-    public void newApplication(Student student) {
-        if(!student.getMajor().equals(this.preferredMajor) || (this.level != InternshipLevel.BASIC && student.getYearOfStudy() <= 2)) {
-            throw new Error("Student is not eligible for this internship");
-        }
-        if(student.hasAcceptedSomeOffer()) {
-            throw new Error("Student has already accepted some offer");
-        }
-        for(InternshipApplication application: DataStorage.getAllInternshipApplications()) {
-            if(application.getStudent().equals(student) && application.getOpportunity().equals(this) && application.getWithdrawStatus() != WithdrawStatus.APPROVED) {
-                throw new Error("Student has already applied for this internship");
-            }
-        }
-        if (!this.visibility) {
-            throw new Error("Internship opportunity is not visible");
-        }
-        if (this.openingDate.isAfter(LocalDate.now())) {
-            throw new Error("Internship opportunity is not open yet");
-        }
-        if (this.closingDate.isBefore(LocalDate.now())) {
-            throw new Error("Internship opportunity is closed");
-        }
-        if (this.status != InternshipOpportunityStatus.APPROVED) {
-            throw new Error("Internship opportunity is not approved yet or filled");
-        }
-
-        DataStorage.newInternshipApplication(this, student);
-    }
-
-    void freeUpASlot() { // It will only be used by other classes (i.e. by classes in the same package, not ui). So, shouldn't be public
+    /**
+     * Free up a slot for the internship opportunity Only used internally
+     */
+    void freeUpASlot() {
         numOfRemainingSlots++;
         if (numOfRemainingSlots == 1) {
             this.status = InternshipOpportunityStatus.APPROVED;
         }
     }
 
+    /**
+     * Take up a slot for the internship opportunity Only used internally
+     */
     void takeUpASlot() {
         numOfRemainingSlots--;
         if (numOfRemainingSlots == 0) {
@@ -169,6 +222,13 @@ public class InternshipOpportunity {
         }
     }
 
+    /**
+     * Check if the internship opportunity matches the given filter settings
+     *
+     * @param filter The filter settings to match against
+     * @return true if the internship opportunity matches the filter, false
+     * otherwise
+     */
     public boolean matchesFilter(InternshipOpportunityFilterSettings filter) {
         if (filter.getPreferredMajors().isPresent() && !filter.getPreferredMajors().get().contains(this.preferredMajor)) {
             return false;
@@ -197,9 +257,6 @@ public class InternshipOpportunity {
         if (this.openingDate.isAfter(LocalDate.now()) && !filter.isShowUnopened()) {
             return false;
         }
-        if (this.closingDate.isBefore(LocalDate.now()) && !filter.isShowClosed()) {
-            return false;
-        }
-        return true;
+        return !(this.closingDate.isBefore(LocalDate.now()) && !filter.isShowClosed());
     }
 }

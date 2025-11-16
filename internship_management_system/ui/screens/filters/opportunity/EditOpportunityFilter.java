@@ -1,4 +1,4 @@
-package internship_management_system.ui.screens.filters;
+package internship_management_system.ui.screens.filters.opportunity;
 
 import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
@@ -75,7 +75,7 @@ public class EditOpportunityFilter implements Screen {
         }
         if (settings.isShowStatus(InternshipOpportunityStatus.APPROVED)) {
             if (user instanceof Student) {
-                statuses.add("Unfilled"); 
+                statuses.add("Not filled"); 
             }else {
                 statuses.add("Approved");
             }

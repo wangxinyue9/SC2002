@@ -1,7 +1,8 @@
-package internship_management_system.ui.screens.filters;
+package internship_management_system.ui.screens.filters.opportunity;
 import internship_management_system.enums.InternshipLevel;
 import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
+import internship_management_system.ui.screens.filters.FilterSettingsToggleableListScreen;
 import internship_management_system.users.User;
 import internship_management_system.filter.InternshipOpportunityFilterSettings;
 import internship_management_system.ui.IO;
@@ -24,7 +25,7 @@ public class EditOpportunityLevelFilter implements FilterSettingsToggleableListS
             IO.exitWithError("User not logged in");
         }
         IO.clearConsole();
-        printTitle("Edit Opportunity Level", uiState);
+        printTitle("Opportunity Filter Setting - Level Filter", uiState);
 
         User user = uiState.getCurrentUser().get();
         InternshipOpportunityFilterSettings settings = user.getOpportunityFilterSettings();

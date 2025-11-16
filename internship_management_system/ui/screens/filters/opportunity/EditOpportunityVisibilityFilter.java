@@ -1,6 +1,7 @@
-package internship_management_system.ui.screens.filters;
+package internship_management_system.ui.screens.filters.opportunity;
 import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
+import internship_management_system.ui.screens.filters.FilterSettingsToggleableListScreen;
 import internship_management_system.users.User;
 import internship_management_system.filter.InternshipOpportunityFilterSettings;
 import internship_management_system.ui.IO;
@@ -27,7 +28,7 @@ public class EditOpportunityVisibilityFilter implements FilterSettingsToggleable
             IO.exitWithError("Student not allowed to access this screen");
         }
         IO.clearConsole();
-        printTitle("Edit Opportunity Visibility Filter", uiState);
+        printTitle("Opportunity Filter Setting - Visibility Filter", uiState);
 
         User user = uiState.getCurrentUser().get();
         InternshipOpportunityFilterSettings settings = user.getOpportunityFilterSettings();

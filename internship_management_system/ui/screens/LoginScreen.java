@@ -3,7 +3,7 @@ package internship_management_system.ui.screens;
 import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
 import internship_management_system.users.User;
-import internship_management_system.Model.DataStorage;
+import internship_management_system.model.DataStorage;
 import internship_management_system.ui.IO;
 import internship_management_system.users.CompanyRepresentative;
 import internship_management_system.users.Student;
@@ -37,9 +37,12 @@ public class LoginScreen implements Screen {
         Optional<User> u = DataStorage.getUserByUserID(username);
         if (!u.isPresent() || !u.get().validatePassword(password)) {
             System.out.println("Invalid username or password");
-            System.out.print("Press Enter to try again...");
-            IO.getScanner().nextLine();
-            return Optional.of(LoginScreen.INSTANCE);
+            System.out.print("Try again? [Y/n] ");
+            String input = IO.getScanner().nextLine();
+            if(input.isEmpty() || input.trim().equalsIgnoreCase("y")) {
+                return Optional.of(LoginScreen.INSTANCE);
+            }
+            return Optional.of(HomeScreen.INSTANCE);
         }
 
         uiState.setCurrentUser(u);

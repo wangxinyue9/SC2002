@@ -2,8 +2,13 @@ internship_management_system
 internship_management_system.enums
 internship_management_system.filter
 internship_management_system.internships
-internship_management_system.Model
+internship_management_system.model
 internship_management_system.ui
 internship_management_system.ui.screens
+internship_management_system.ui.screens.career_center_staff
+internship_management_system.ui.screens.company_representative
 internship_management_system.ui.screens.filters
+internship_management_system.ui.screens.filters.application
+internship_management_system.ui.screens.filters.opportunity
+internship_management_system.ui.screens.student
 internship_management_system.users

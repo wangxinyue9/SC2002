@@ -1,4 +1,4 @@
-package internship_management_system.ui.screens.filters;
+package internship_management_system.ui.screens.filters.opportunity;
 
 import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
@@ -26,7 +26,7 @@ public class EditOpportunityClosesBefore implements Screen {
             IO.exitWithError("User not logged in");
         }
         IO.clearConsole();
-        printTitle("Edit Internship Opportunity 'Closes Before' Filter", uiState);
+        printTitle("Opportunity Filter Setting - 'Closes Before' Filter", uiState);
 
         User user  = uiState.getCurrentUser().get();
         InternshipOpportunityFilterSettings settings = user.getOpportunityFilterSettings();

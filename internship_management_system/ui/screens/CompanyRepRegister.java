@@ -3,7 +3,7 @@ package internship_management_system.ui.screens;
 import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
 import internship_management_system.users.CompanyRepresentative;
-import internship_management_system.Model.DataStorage;
+import internship_management_system.model.DataStorage;
 import internship_management_system.ui.IO;
 import java.util.Optional;
 
@@ -24,21 +24,6 @@ public class CompanyRepRegister implements Screen {
         IO.clearConsole();
         printTitle("Company Representative Registration", uiState);
 
-         System.out.print("Choose a user ID: ");
-        String userID = IO.getScanner().nextLine().trim();
-        if (userID.isEmpty()) {
-            System.out.println("User ID cannot be empty.");
-            System.out.print("Press Enter to try again...");
-            IO.getScanner().nextLine();
-            return Optional.of(CompanyRepRegister.INSTANCE);
-        }
-        if (DataStorage.getUserByUserID(userID).isPresent()) {
-            System.out.printf("User ID \"%s\" is already taken.%n", userID);
-            System.out.print("Press Enter to try again...");
-            IO.getScanner().nextLine();
-            return Optional.of(CompanyRepRegister.INSTANCE);
-        }
-
         System.out.print("Full name: ");
         String name = IO.getScanner().nextLine().trim();
         System.out.print("Company name: ");
@@ -51,7 +36,14 @@ public class CompanyRepRegister implements Screen {
             System.out.println("All fields are required.");
             System.out.print("Press Enter to try again...");
             IO.getScanner().nextLine();
-            return Optional.of(CompanyRepRegister.INSTANCE);
+            return Optional.of(INSTANCE);
+        }
+
+        if(DataStorage.getCompanyReps().stream().anyMatch(cr -> cr.getCompanyName().equals(companyName))) {
+            System.out.println("A Company Representative from this company already exists.");
+            System.out.print("Press Enter to try again...");
+            IO.getScanner().nextLine();
+            return Optional.of(INSTANCE);
         }
 
         System.out.print("Create a password (min 6 characters): ");
@@ -60,14 +52,14 @@ public class CompanyRepRegister implements Screen {
             System.out.println("Password must be at least 6 characters long.");
             System.out.print("Press Enter to try again...");
             IO.getScanner().nextLine();
-            return Optional.of(CompanyRepRegister.INSTANCE);
+            return Optional.of(INSTANCE);
         }
 
-        CompanyRepresentative newRep = DataStorage.newCompanyRep(userID, name, companyName, department, position);
+        CompanyRepresentative newRep = DataStorage.newCompanyRep(name, companyName, department, position);
         newRep.changePassword(password);
 
 
-        System.out.println("\nRegistration submitted. A Career Centre Staff must approve your account before you can log in.");
+        System.out.printf("\nRegistration submitted. Your user id is \"%s\". A Career Centre Staff must approve your account before you can log in.\n", newRep.getUserID());
         System.out.print("Press Enter to return to login...");
         IO.getScanner().nextLine();
         return Optional.of(LoginScreen.INSTANCE);
