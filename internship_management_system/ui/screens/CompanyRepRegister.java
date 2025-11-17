@@ -24,8 +24,18 @@ public class CompanyRepRegister implements Screen {
         IO.clearConsole();
         printTitle("Company Representative Registration", uiState);
 
-        System.out.print("Full name: ");
+        System.out.print("Full name (keep empty to go back): ");
         String name = IO.getScanner().nextLine().trim();
+        if (name.isEmpty()) {
+            System.out.print("Are you sure you want to go back? [Y/n] ");
+            String confirm = IO.getScanner().nextLine().trim().toLowerCase();
+            if (confirm.equals("y") || confirm.equals("")) {
+                return Optional.of(HomeScreen.INSTANCE);
+            }
+            else {
+                return Optional.of(INSTANCE);
+            }
+        }
         System.out.print("Company name: ");
         String companyName = IO.getScanner().nextLine().trim();
         System.out.print("Department: ");
@@ -62,7 +72,7 @@ public class CompanyRepRegister implements Screen {
         System.out.printf("\nRegistration submitted. Your user id is \"%s\". A Career Centre Staff must approve your account before you can log in.\n", newRep.getUserID());
         System.out.print("Press Enter to return to login...");
         IO.getScanner().nextLine();
-        return Optional.of(LoginScreen.INSTANCE);
+        return Optional.of(HomeScreen.INSTANCE);
     }
 
 }

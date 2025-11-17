@@ -37,8 +37,18 @@ public class CreateNewOpportunity implements Screen {
         IO.clearConsole();
         printTitle("Create New Internship Opportunity", uiState);
         
-        System.out.print("Internship title: ");
+        System.out.print("Internship title (enter empty title to go back): ");
         String title = IO.getScanner().nextLine().trim();
+        if (title.isEmpty()) {
+            System.out.print("Are you sure you want to go back? [Y/n] ");
+            String confirm = IO.getScanner().nextLine().trim().toLowerCase();
+            if (confirm.equals("y") || confirm.equals("")) {
+                return Optional.empty();
+            }
+            else {
+                return Optional.of(INSTANCE);
+            }
+        }
 
         System.out.print("Internship description: ");
         String description = IO.getScanner().nextLine().trim();

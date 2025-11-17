@@ -30,8 +30,18 @@ public class LoginScreen implements Screen {
         IO.clearConsole();
         printTitle("Login", uiState);
 
-        System.out.print("Username: ");
+        System.out.print("Username (keep empty to go back): ");
         String username = IO.getScanner().nextLine().trim();
+        if (username.isEmpty()) {
+            System.out.print("Are you sure you want to go back? [Y/n] ");
+            String confirm = IO.getScanner().nextLine().trim().toLowerCase();
+            if (confirm.equals("y") || confirm.equals("")) {
+                return Optional.of(HomeScreen.INSTANCE);
+            }
+            else {
+                return Optional.of(INSTANCE);
+            }
+        }
         System.out.print("Password: ");
         String password = IO.getScanner().nextLine();
         Optional<User> u = DataStorage.getUserByUserID(username);

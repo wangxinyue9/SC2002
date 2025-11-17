@@ -22,7 +22,6 @@ public interface FilterSettingsEditableListScreen extends Screen {
      * @return returns true if the screen should be shown again, false to go back
      */
     default boolean handleListEditing(String name, Optional<HashSet<String>> currentItems, Consumer<String> addItem, Consumer<String> removeItem, Runnable resetItems) {
-        // TODO: encapsulation
         System.out.println("Current " + name + "(s):");
         ArrayList<String> itemsList = new ArrayList<>();
         if(currentItems.isPresent()) {
@@ -38,7 +37,7 @@ public interface FilterSettingsEditableListScreen extends Screen {
         System.out.println("");
         System.out.printf("To add a %s, type '+ <%s>'\n", name.toLowerCase(), lower_name);
         System.out.printf("To remove a %s, type '- <%s-number-in-list>'\n", name.toLowerCase(), lower_name);
-        System.out.println("Type * to reset");
+        System.out.println("Type * to reset to ALL");
         System.out.println("Type 0 to go back");
 
         System.out.print("Your input: ");
@@ -51,7 +50,8 @@ public interface FilterSettingsEditableListScreen extends Screen {
                 int i = Integer.parseInt(input.substring(2).trim());
                 i--;
                 if (i >= 0 && i < itemsList.size()) {
-                    removeItem.accept(itemsList.get(i));
+                    if(i == 0 && itemsList.size() == 1) resetItems.run();
+                    else removeItem.accept(itemsList.get(i));
                 }
             } catch (NumberFormatException e) {
             }

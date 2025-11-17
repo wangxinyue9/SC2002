@@ -47,16 +47,22 @@ public class EditOpportunityClosesAfter implements Screen {
                 LocalDate date = LocalDate.parse(input);
                 if(settings.getClosesBefore().isPresent() && settings.getClosesBefore().get().isBefore(date)) {
                     System.out.println("Closes after date cannot be after closes before date.");
-                    System.out.println("Press Enter to continue...");
-                    IO.getScanner().nextLine();
+                    System.out.print("Try again? [Y/n] ");
+                    String resp = IO.getScanner().nextLine().trim();
+                    if(resp.isEmpty() || resp.equalsIgnoreCase("y")) {
+                        return Optional.of(INSTANCE);
+                    }
                 }
                 else {
                     settings.setClosesAfter(date);
                 }
             } catch (Exception e) {
                 System.out.println("Invalid date format. Please use YYYY-MM-DD.");
-                System.out.println("Press Enter to continue...");
-                IO.getScanner().nextLine();
+                System.out.print("Try again? [Y/n] ");
+                String resp = IO.getScanner().nextLine().trim();
+                if(resp.isEmpty() || resp.equalsIgnoreCase("y")) {
+                    return Optional.of(INSTANCE);
+                }
             }
         }
 

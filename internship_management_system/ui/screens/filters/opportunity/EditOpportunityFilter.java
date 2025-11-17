@@ -48,7 +48,7 @@ public class EditOpportunityFilter implements Screen {
             }
             operationFunctions.add(EditOpportunityPreferredMajorFilter.INSTANCE);
         }
-        if (!(user instanceof Student) || ((Student) user).getYearOfStudy() >= 2) {
+        if (!(user instanceof Student) || ((Student) user).getYearOfStudy() > 2) {
             operations.add("Level");
             ArrayList<String> levels = new ArrayList<>();
             if (settings.isShowLevel(InternshipLevel.BASIC)) {
