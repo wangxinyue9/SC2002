@@ -1,121 +1,71 @@
 package internship_management_system.users;
 
-import internship_management_system.FilterSettings;
-import internship_management_system.Model.DataStorage;
 import internship_management_system.enums.*;
-import internship_management_system.internships.*;
 
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+/**
+ * Class representing a company representative user
+ */
+public class CompanyRepresentative extends User {
 
-public class CompanyRepresentative extends User
-{
-    private String companyName;
-    private String department;
-    private String position;
-    private boolean approved;
+    private final String companyName;
+    private final String department;
+    private final String position;
+    private CompanyRepresentativeStatus status;
 
-    public CompanyRepresentative(String id, String name, String password,
-                                 String companyName, String department, String position)
-    {
-        super(id, name, password);
+    /**
+     * Constructor for CompanyRepresentative
+     *
+     * @param id CompanyRepresentative's internal ID, also refers to index in
+     * DataStorage
+     * @param name CompanyRepresentative's full name
+     * @param companyName Name of the company the representative works for
+     * @param department Department of the company the representative works for
+     * @param position Position of the representative in the company
+     */
+    public CompanyRepresentative(int id, String name,
+            String companyName, String department, String position) {
+        super(id, name, "CR" + id);
         this.companyName = companyName;
         this.department = department;
         this.position = position;
+        this.status = CompanyRepresentativeStatus.PENDING;
+
+        super.getOpportunityFilterSettings().addCompany(companyName);
     }
 
-    // --- Registration (Pending Approval by Career Center Staff) ---
-    public void register()
-    {
-        DataStorage.addCompanyRep(this);
-        System.out.printf("Registration submitted for %s (%s). Awaiting approval.%n", getName(), companyName);
+    /**
+     * @return Company name of the representative
+     */
+    public String getCompanyName() {
+        return companyName;
     }
 
-    // --- Internship Creation ---
-    public Optional<InternshipOpportunity> createInternship(
-            int id, String title, String description, String major,
-            InternshipLevel level, LocalDate openDate, LocalDate closeDate,
-            int slots, boolean visibility)
-    {
-
-        if (!approved)
-        {
-            System.out.println("You are not yet approved to create internships.");
-            return Optional.empty();
-        }
-
-        long existing = DataStorage.getInternships()
-                                   .stream()
-                                   .filter(i -> i.getCompanyRep().getCompanyName().equals(companyName))
-                                   .count();
-
-        if (existing >= 5)
-        {
-            System.out.println("Limit Reached: You can only create up to 5 internships!");
-            return Optional.empty();
-        }
-
-        InternshipOpportunity internship = new InternshipOpportunity
-                (
-                    id, title, description, major, level,
-                    openDate, closeDate, this, slots, visibility
-                );
-
-        DataStorage.addInternship(internship);
-        System.out.println("Internship Created and Pending Career Center Approval.");
-        return Optional.of(internship);
+    /**
+     * @return Status of the company representative
+     */
+    public CompanyRepresentativeStatus getStatus() {
+        return status;
     }
 
-    // --- Application Decisions ---
-    public void approveApplication(int internshipId, String studentId)
-    {
-        DataStorage.findInternshipById(internshipId)
-                   .ifPresentOrElse(i ->
-                   {
-                        i.approveApplicant(studentId);
-                        System.out.printf("Student %s approved for internship %d.%n", studentId, internshipId);
-                   },
-                   () -> System.out.println("Internship not found."));
+    /**
+     * Set the status of the company representative
+     * @param status New status to be set
+     */
+    public void setStatus(CompanyRepresentativeStatus status) {
+        this.status = status;
     }
 
-    public void rejectApplication(int internshipId, String studentId)
-    {
-        DataStorage.findInternshipById(internshipId)
-                .ifPresentOrElse(i ->
-                {
-                    i.rejectApplicant(studentId);
-                    System.out.printf("Student %s rejected for internship %d.%n", studentId, internshipId);
-                },
-                () -> System.out.println("Internship not found."));
+    /**
+     * @return Department of the company representative
+     */
+    public String getDepartment() {
+        return department;
     }
 
-    // --- Visibility Toggle ---
-    public void toggleVisibility(int internshipId)
-    {
-        DataStorage.findInternshipById(internshipId)
-                .ifPresentOrElse(i ->
-                {
-                    i.toggleVisibility();
-                    System.out.printf("Internship %d visibility toggled to %s.%n", internshipId, i.getVisibility());
-                },
-                () -> System.out.println("Internship not found."));
+    /**
+     * @return Position of the company representative
+     */
+    public String getPosition() {
+        return position;
     }
-
-    // --- Filtering ---
-    public List<InternshipOpportunity> saveAndApplyFilterInternship(FilterSettings filters)
-    {
-        // Example: Filter Logic using Streams
-        return DataStorage.getInternships()
-                          .stream()
-                          .filter(i -> i.getCompanyRep().getCompanyName().equals(companyName))
-                          .filter(i -> filters.matches(i))
-                          .sorted(Comparator.comparing(InternshipOpportunity::getTitle))
-                          .collect(Collectors.toList());
-    }
-
-    // --- Getters and Setters ---
-    public String getCompanyName() { return companyName; }
-    public boolean isApproved() { return approved; }
-    public void setApproved(boolean approved) { this.approved = approved; }
 }

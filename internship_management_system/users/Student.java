@@ -1,173 +1,66 @@
-﻿package internship_management_system.users;
+package internship_management_system.users;
 
-import internship_management_system.FilterSettings;
-import internship_management_system.internships.InternshipApplication;
-import internship_management_system.internships.InternshipOpportunity;
-import internship_management_system.enums.WithdrawStatus;
 import internship_management_system.enums.InternshipOpportunityStatus;
 import internship_management_system.enums.InternshipLevel;
-import java.util.*;
 
-public class Student extends User
-{
-    
-    private int yearOfStudy;
-    private String major;
-    private List<InternshipApplication> appliedInternships;
-    private List<InternshipApplication> successfulInternships; //not used right now
-    private boolean acceptedSomeOffer;
+/**
+ * Student user class
+ */
+public class Student extends User {
 
+    private final int yearOfStudy;
+    private final String major;
+    private final String email;
 
-    public Student(String id, String name, String password, int yearOfStudy, String major)
-    {
-        // User constructor is (name, userID, userPassword)
-        super(name, id, password);
+    /**
+     * Constructor for Student
+     *
+     * @param id Student's internal ID, also refers to index in DataStorage
+     * @param userID Student's login ID
+     * @param name Student's full name
+     * @param yearOfStudy Student's current year of study
+     * @param major Student's major
+     * @param email Student's email address
+     */
+    public Student(int id, String userID, String name, int yearOfStudy, String major, String email) {
+        super(id, name, userID);
 
         this.yearOfStudy = yearOfStudy;
         this.major = major;
-        appliedInternships = new ArrayList<>();
-        successfulInternships = new ArrayList<>();
-        acceptedSomeOffer = false;
+        this.email = email;
 
-        // Initialize student-specific default filter settings using User's setters
-        // Only public opportunities
-        super.setVisibility(true);
-
-        // Status: APPROVED or FILLED
-        java.util.Set<InternshipOpportunityStatus> statuses = new java.util.HashSet<>();
-        statuses.add(InternshipOpportunityStatus.APPROVED);
-        statuses.add(InternshipOpportunityStatus.FILLED);
-        super.setOpportunityStatuses(statuses);
-
-        // Level by year of study
-        java.util.Set<InternshipLevel> levels = new java.util.HashSet<>();
-        if (this.yearOfStudy <= 2) {
-            levels.add(InternshipLevel.BASIC);
-        } else {
-            levels.add(InternshipLevel.BASIC);
-            levels.add(InternshipLevel.INTERMEDIATE);
-            levels.add(InternshipLevel.ADVANCED);
+        super.getOpportunityFilterSettings().toggleShowHidden();
+        super.getOpportunityFilterSettings().toggleShowUnopened();
+        super.getOpportunityFilterSettings().toggleShowClosed();
+        super.getOpportunityFilterSettings().addPreferredMajor(major);
+        if (yearOfStudy <= 2) {
+            super.getOpportunityFilterSettings().toggleShowLevel(InternshipLevel.INTERMEDIATE);
+            super.getOpportunityFilterSettings().toggleShowLevel(InternshipLevel.ADVANCED);
         }
-        super.setLevels(levels);
-
-        // Major: student's own major (stored uppercase to match comparison logic)
-        if (this.major != null && !this.major.isEmpty()) {
-            java.util.Set<String> majors = new java.util.HashSet<>();
-            majors.add(this.major.toUpperCase());
-            super.setMajors(majors);
-        }
+        super.getOpportunityFilterSettings().toggleShowStatus(InternshipOpportunityStatus.PENDING);
+        super.getOpportunityFilterSettings().toggleShowStatus(InternshipOpportunityStatus.REJECTED);
+        super.getOpportunityFilterSettings().toggleShowStatus(InternshipOpportunityStatus.FILLED);
+        super.getOpportunityFilterSettings().toggleShowHidden();
     }
 
-
-    public void applyForInternship(InternshipOpportunity internship)
-    {
-        // Prevent duplicate application based on the student's applied list
-        for (InternshipApplication app : appliedInternships)
-        {
-            if (app.getOpportunity().equals(internship))
-            {
-                throw new Error("Already applied to this internship");
-            }
-        }
-
-        // Create a new application via the opportunity API
-        internship.newApplication(getUserID()); // maybe should use the student object directly
-
-        // Locate the newly created application from the global list
-        InternshipApplication created = null;
-        List<InternshipApplication> all = InternshipApplication.getApplicationList("");
-        if (all != null)
-        {
-            for (InternshipApplication app : all)
-            {
-                if (app.getStudent().equals(getUserID()) && app.getOpportunity().equals(internship))
-                {
-                    if (created == null || app.getId() > created.getId())
-                    {
-                        created = app; // pick the latest matching application
-                    }
-                }
-            }
-        }
-
-        if (created == null)
-        {
-            throw new Error("Failed to locate newly created application");
-        }
-
-        if (appliedInternships == null)
-        {
-            appliedInternships = new ArrayList<>();
-        }
-        appliedInternships.add(created);
+    /**
+     * @return Student's major
+     */
+    public String getMajor() {
+        return major;
     }
 
-    public void viewInternshipStatus(InternshipApplication internship)
-    {
-        System.out.println("The application status is: " + internship.getStatus());
+    /**
+     * @return Student's email address
+     */
+    public String getEmail() {
+        return email;
     }
 
-    public void acceptInternship(InternshipApplication internship)
-    {
-        internship.confirmPlacement(true);
-        toggleAcceptedSomeOffer();
-    } 
-
-    public void requestWithdrawInternship(InternshipApplication internship){
-        internship.requestWithdraw();
-    }
-
-    public void withdrawRequestToWithdraw (InternshipApplication internship)
-    {
-        if (internship.getWithdrawStatus() != WithdrawStatus.PENDING)
-        {
-            throw new Error("No pending withdraw request to cancel");
-        }
-        // Use confirmWithdraw(false) to mark the pending request as rejected (i.e., canceled by student)
-        internship.confirmWithdraw(false);
-    }
-
-    public void removeAppliedInternship(InternshipApplication internshipApplication)
-    {
-        appliedInternships.remove(internshipApplication);
-        //once the withdraw request is approved by the career staff, call this to remove from the applied list. 
-    }
-
-    public void toggleAcceptedSomeOffer(){
-        acceptedSomeOffer = true;
-    }
-    @Override
-    protected java.util.Map<String, Boolean> getFilterEditCapabilities() {
-        java.util.Map<String, Boolean> caps = new java.util.HashMap<>();
-        caps.put("opportunityStatus", true);
-        caps.put("level", false);
-        caps.put("majors", false);
-        caps.put("visibility", false);
-        caps.put("closingDates", true);
-        caps.put("sort", true);
-        return caps;
+    /**
+     * @return Student's year of study
+     */
+    public int getYearOfStudy() {
+        return yearOfStudy;
     }
 }
-
-// User
-
-// Rethink login flow and move logic to main app 
-// Improve login beyond simple password check 
-
-
-// Student
-
-// Initialize/configure filter settings for a student in the constructor.
-// Implement applyFilterSettings to:
-// Apply current filters,
-// Display matching internships,
-// Allow changes to filters,
-// Auto-save updated filters
-// Consider refactoring application API to use Student object instead of userID when calling newApplication
-// Decide how to use or remove successfulInternships since it鈥檚 鈥渘ot used right now.鈥?
-// Ensure external flow (e.g., staff approval) calls removeAppliedInternship after withdraw approval to keep applied list in sync
-
-
-
-
-

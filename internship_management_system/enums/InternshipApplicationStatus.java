@@ -1,9 +1,13 @@
 package internship_management_system.enums;
 
 /**
- *
- * @author jarif
+ * Enum representing the status of an internship application
  */
 public enum InternshipApplicationStatus {
-    PENDING, SUCCESSFUL, UNSUCCESSFUL
+    /** Internship application is pending review */
+    PENDING,
+    /** Internship application was successful (i.e., the student was offered the internship) */
+    SUCCESSFUL,
+    /** Internship application was unsuccessful (i.e. the student got rejected) */
+    UNSUCCESSFUL
 }
