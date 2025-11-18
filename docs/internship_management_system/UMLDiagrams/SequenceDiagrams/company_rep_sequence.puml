@@ -1,0 +1,82 @@
+@startuml
+title Company Representative Internship Management & Application Review
+
+actor ":Company Representative\n<<actor>>" as CR
+actor ":Career Centre Staff\n<<actor>>" as CCS
+participant "ui:UIManager\n<<control>>" as UIManager
+participant "login:LoginScreen\n<<boundary>>" as LoginScreen
+participant "state:UIState\n<<entity>>" as UIState
+database "ds:DataStorage\n<<entity>>" as DataStorage
+participant "crAcct:CompanyRepresentative\n<<entity>>" as CRAccount
+participant "home:CompanyRepHome\n<<boundary>>" as CompanyRepHome
+participant "oppList:InternshipOpportunityList\n<<boundary>>" as OppList
+participant "crOpp:CROpportunityScreen\n<<boundary>>" as OppScreen
+participant "ccsOpp:CCSOpportunityScreen\n<<boundary>>" as CCSOpp
+participant "appList:OpportunityApplications\n<<boundary>>" as AppList
+participant "crApp:CRApplicationScreen\n<<boundary>>" as CRApp
+entity "opp:InternshipOpportunity\n<<entity>>" as Opportunity
+entity "app:InternshipApplication\n<<entity>>" as Application
+actor ":Student\n<<actor>>" as StudentUser
+participant "studOpp:StudentOpportunityScreen\n<<boundary>>" as StudentOpp
+participant "studApp:StudentApplicationScreen\n<<boundary>>" as StudentApp
+
+CR -> UIManager: startSession()
+activate UIManager
+UIManager -> LoginScreen: show(uiState)
+activate LoginScreen
+CR -> LoginScreen: enter username/password
+LoginScreen -> DataStorage: getUserByUserID(userId)
+activate DataStorage
+DataStorage --> LoginScreen: Optional<User>
+deactivate DataStorage
+LoginScreen -> CRAccount: validatePassword(password)
+CRAccount --> LoginScreen: credentialsValid?
+alt invalid credentials
+    LoginScreen -> CR: show error + retry prompt
+    LoginScreen --> UIManager: LoginScreen.INSTANCE
+    deactivate LoginScreen
+    deactivate UIManager
+else valid credentials
+    LoginScreen -> UIState: setCurrentUser(CRAccount)
+    UIState --> LoginScreen: stored
+    LoginScreen --> UIManager: CompanyRepHome.INSTANCE
+end
+deactivate LoginScreen
+
+UIManager -> CompanyRepHome: show(uiState)
+activate CompanyRepHome
+CompanyRepHome -> CR: display approval status + menu
+alt CR not approved
+    CompanyRepHome -> CR: show pending/rejected message
+    CompanyRepHome -> UIState: setCurrentUser(Optional.empty)
+    CompanyRepHome --> UIManager: HomeScreen.INSTANCE
+    deactivate CompanyRepHome
+    deactivate UIManager
+else CR approved
+    CR -> CompanyRepHome: select "Manage internship opportunities"
+    CompanyRepHome --> UIManager: InternshipOpportunityList.INSTANCE
+end
+deactivate CompanyRepHome
+
+== Company Representative Opportunity Management ==
+ref over OppList,OppScreen,AppList,CRApp
+See "docs/company_rep_cr_screens.puml" for the detailed flow where the
+Company Representative filters opportunities, toggles visibility, and reviews
+student applications via the UI screens.
+end ref
+
+== Career Centre Staff Approval ==
+ref over CCSOpp,Opportunity
+See "docs/company_rep_ccs_approval.puml" for how Career Centre Staff review,
+approve, or reject pending internship opportunities before students can see them.
+end ref
+
+== Student Browsing Approved & Visible Opportunities ==
+ref over StudentUser,StudentOpp,StudentApp
+See "docs/company_rep_student_flow.puml" for how students only see APPROVED,
+visible opportunities matching their major/year filters and how they apply.
+end ref
+
+UIManager --> LoginScreen: loop back or exit
+deactivate UIManager
+@enduml
