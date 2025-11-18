@@ -34,6 +34,12 @@ public class CRCreateNewOpportunity implements Screen {
             IO.exitWithError("Company representative is not approved to create internship opportunities.");
         }
 
+        boolean canCreateOpportunity = DataStorage.getInternshipOpportunities().stream()
+                .filter(o -> !o.isDeleted() && o.getCompanyRep().equals(cr)).count() < 5;
+        if(!canCreateOpportunity) {
+            return Optional.empty();
+        }
+
         IO.clearConsole();
         printTitle("Create New Internship Opportunity", uiState);
         
