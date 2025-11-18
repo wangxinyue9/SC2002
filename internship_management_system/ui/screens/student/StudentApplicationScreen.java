@@ -47,7 +47,7 @@ public class StudentApplicationScreen implements Screen {
         if (app.getWithdrawStatus() == WithdrawStatus.APPROVED) {
             System.out.println("This application has been withdrawn and is no longer active.");
         } else if (app.getStatus() == InternshipApplicationStatus.PENDING) {
-            options.add("Request withdrawal");
+            if (app.getWithdrawStatus() == WithdrawStatus.NOT_REQUESTED) options.add("Request withdrawal");
         } else if (app.getStatus() == InternshipApplicationStatus.SUCCESSFUL) {
             switch (app.getPlacementConfirmationStatus()) {
                 case PENDING -> {
