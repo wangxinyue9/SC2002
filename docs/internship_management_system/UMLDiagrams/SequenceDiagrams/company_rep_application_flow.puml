@@ -1,0 +1,70 @@
+@startuml
+title Company Representative – Application Review & Decision Flow
+
+actor ":Company Representative\n<<actor>>" as CR
+participant "ui:UIManager\n<<control>>" as UIManager
+participant "appList:OpportunityApplications\n<<boundary>>" as AppList
+participant "state:UIState\n<<entity>>" as UIState
+database "ds:DataStorage\n<<entity>>" as DataStorage
+participant "crApp:CRApplicationScreen\n<<boundary>>" as CRApp
+entity "app:InternshipApplication\n<<entity>>" as Application
+actor ":Student\n<<actor>>" as StudentUser
+participant "studApp:StudentApplicationScreen\n<<boundary>>" as StudentApp
+
+== Company Rep Opens Application List ==
+CR -> UIManager: from opportunity detail choose "View Applications"
+UIManager -> AppList: show(uiState)
+activate AppList
+AppList -> DataStorage: getInternshipApplications(currentOpportunity)
+activate DataStorage
+DataStorage --> AppList: applications filtered by rep settings
+deactivate DataStorage
+alt empty list
+    AppList -> CR: show empty state
+    AppList --> UIManager: Optional.empty()
+    deactivate AppList
+    return
+else entries exist
+    AppList -> CR: render list with statuses/withdraw flags
+    CR -> AppList: choose application row
+    AppList -> UIState: setCurrentApplication(selection)
+    AppList --> CRApp: transition
+end
+deactivate AppList
+
+== Application Decision ==
+activate CRApp
+CRApp -> CR: display applicant details & options
+alt application pending & withdraw != APPROVED & opportunity not filled
+    CR -> CRApp: choose action
+    alt Offer internship
+        CRApp -> Application: finalizeApplicationStatus(true)
+        Application --> CRApp: status SUCCESSFUL
+    else Reject application
+        CRApp -> Application: finalizeApplicationStatus(false)
+        Application --> CRApp: status UNSUCCESSFUL
+    end
+else read-only state
+    CRApp -> CR: show current outcome (withdrawn / successful / rejected)
+end
+CRApp --> UIManager: back to application list
+deactivate CRApp
+
+== Student Follow-up ==
+StudentUser -> StudentApp: open application
+activate StudentApp
+alt Offer accepted
+    StudentUser -> StudentApp: confirmPlacement(true)
+    StudentApp -> Application: confirmPlacement(true)
+    Application -> Opportunity: takeUpASlot()
+    note right of StudentApp
+    DataStorage withdraws other offers for this student automatically.
+    end note
+else Request withdraw / reject offer
+    StudentUser -> StudentApp: requestWithdraw() or confirmPlacement(false)
+    StudentApp -> Application: update withdraw / placement status
+end
+StudentApp --> StudentUser: show updated status
+deactivate StudentApp
+
+@enduml

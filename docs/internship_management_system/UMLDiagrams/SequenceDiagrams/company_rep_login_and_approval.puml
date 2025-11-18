@@ -1,0 +1,77 @@
+@startuml
+title Company Representative – Login & Staff Approval Flow
+
+actor ":Company Representative\n<<actor>>" as CR
+participant "ui:UIManager\n<<control>>" as UIManager
+participant "login:LoginScreen\n<<boundary>>" as LoginScreen
+participant "state:UIState\n<<entity>>" as UIState
+database "ds:DataStorage\n<<entity>>" as DataStorage
+participant "home:CompanyRepHome\n<<boundary>>" as CompanyRepHome
+actor ":Career Centre Staff\n<<actor>>" as CCS
+participant "ccsOpp:CCSOpportunityScreen\n<<boundary>>" as CCSOpp
+entity "opp:InternshipOpportunity\n<<entity>>" as Opportunity
+
+== Login ==
+CR -> UIManager: startSession()
+activate UIManager
+UIManager -> LoginScreen: show(uiState)
+activate LoginScreen
+CR -> LoginScreen: enter username/password
+LoginScreen -> DataStorage: getUserByUserID(userId)
+activate DataStorage
+DataStorage --> LoginScreen: Optional<User>
+deactivate DataStorage
+LoginScreen -> CR: show invalid credentials?
+alt invalid credentials
+    LoginScreen --> UIManager: LoginScreen.INSTANCE (retry)
+    deactivate LoginScreen
+    deactivate UIManager
+    return
+else valid credentials
+    LoginScreen -> UIState: setCurrentUser(CR account)
+    LoginScreen --> UIManager: CompanyRepHome.INSTANCE
+end
+deactivate LoginScreen
+
+== Home Screen Approval Gate ==
+UIManager -> CompanyRepHome: show(uiState)
+activate CompanyRepHome
+alt CR pending or rejected
+    CompanyRepHome -> CR: display status message
+    CompanyRepHome -> UIState: setCurrentUser(Optional.empty)
+    CompanyRepHome --> UIManager: HomeScreen.INSTANCE
+    deactivate CompanyRepHome
+    deactivate UIManager
+    return
+else CR approved
+    CompanyRepHome -> CR: show management menu
+    CompanyRepHome --> UIManager: InternshipOpportunityList.INSTANCE
+end
+deactivate CompanyRepHome
+
+== Career Centre Staff Approval ==
+CR -> CCS: submit opportunity for approval (out-of-band)
+CCS -> UIManager: open CCS workflow
+UIManager -> CCSOpp: show(uiState)
+activate CCSOpp
+CCSOpp -> Opportunity: inspect status
+alt status == PENDING
+    CCSOpp -> CCS: offer Approve / Reject
+    alt approve
+        CCSOpp -> Opportunity: setStatus(APPROVED)
+        note right of CCSOpp
+        Students can only see/apply when status becomes APPROVED.
+        end note
+    else reject
+        CCSOpp -> Opportunity: setStatus(REJECTED)
+        CCSOpp -> CR: communicate decision (via system notice/email)
+    end
+else already resolved
+    CCSOpp -> CCS: show read-only details
+end
+CCSOpp --> UIManager: return to CCS menu
+deactivate CCSOpp
+
+UIManager --> LoginScreen: loop back / exit
+deactivate UIManager
+@enduml

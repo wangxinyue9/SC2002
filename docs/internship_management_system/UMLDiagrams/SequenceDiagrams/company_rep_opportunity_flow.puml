@@ -1,0 +1,65 @@
+@startuml
+title Company Representative – Opportunity Management Flow
+
+actor ":Company Representative\n<<actor>>" as CR
+participant "ui:UIManager\n<<control>>" as UIManager
+participant "oppList:InternshipOpportunityList\n<<boundary>>" as OppList
+participant "state:UIState\n<<entity>>" as UIState
+database "ds:DataStorage\n<<entity>>" as DataStorage
+participant "oppScreen:CROpportunityScreen\n<<boundary>>" as OppScreen
+entity "opp:InternshipOpportunity\n<<entity>>" as Opportunity
+actor ":Student\n<<actor>>" as StudentUser
+
+== Company Rep Views Opportunities ==
+CR -> UIManager: from CompanyRepHome choose "Manage opportunities"
+UIManager -> OppList: show(uiState)
+activate OppList
+OppList -> UIState: read CompanyRep filters (company, visibility, status)
+OppList -> DataStorage: getInternshipOpportunities(filters)
+activate DataStorage
+DataStorage --> OppList: filtered list
+deactivate DataStorage
+alt list empty
+    OppList -> CR: show empty message
+    OppList --> UIManager: Optional.empty()
+    deactivate OppList
+    return
+else entries exist
+    CR -> OppList: select row or "+" to create
+    OppList -> UIState: setCurrentOpportunity(selected)
+    OppList --> OppScreen: transition
+end
+deactivate OppList
+
+== Opportunity Detail ==
+activate OppScreen
+OppScreen -> CR: show summary + actions
+alt Toggle visibility
+    CR -> OppScreen: choose Toggle Visibility
+    OppScreen -> Opportunity: toggleVisibility()
+    Opportunity --> OppScreen: HIDDEN/VISIBLE updated
+    note right of OppScreen
+    Visibility controls whether students can see the opportunity once approved.
+    end note
+else View applications
+    CR -> OppScreen: choose "View Applications"
+    OppScreen --> UIManager: OpportunityApplications.INSTANCE
+else Back
+    OppScreen --> UIManager: Optional.empty()
+end
+deactivate OppScreen
+
+== Student Perspective (Reference) ==
+StudentUser -> UIManager: open InternshipOpportunityList
+UIManager -> OppList: show(uiState as student)
+activate OppList
+OppList -> UIState: load student filters (major/year)
+OppList -> DataStorage: getInternshipOpportunities(student filters)
+activate DataStorage
+DataStorage --> OppList: only APPROVED & visible postings
+deactivate DataStorage
+StudentUser -> OppList: select opportunity if matches criteria
+OppList -> StudentUser: show details / apply via StudentOpportunityScreen
+deactivate OppList
+
+@enduml
