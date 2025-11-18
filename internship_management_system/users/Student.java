@@ -40,7 +40,6 @@ public class Student extends User {
         super.getOpportunityFilterSettings().toggleShowStatus(InternshipOpportunityStatus.PENDING);
         super.getOpportunityFilterSettings().toggleShowStatus(InternshipOpportunityStatus.REJECTED);
         super.getOpportunityFilterSettings().toggleShowStatus(InternshipOpportunityStatus.FILLED);
-        super.getOpportunityFilterSettings().toggleShowHidden();
     }
 
     /**

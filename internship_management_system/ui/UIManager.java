@@ -58,7 +58,7 @@ public class UIManager {
      * @param studentFile Path to the student data file
      * @param careerStaffFile Path to career staff data file
      */
-    final void loadDataFromCSV(String studentFile, String careerStaffFile) {
+    private void loadDataFromCSV(String studentFile, String careerStaffFile) {
         try (Scanner sc2 = new Scanner(new File(studentFile))) {
             boolean firstLine = true;
             while (sc2.hasNextLine()) {
