@@ -21,10 +21,11 @@ public class CompanyRepresentative extends User {
      * @param companyName Name of the company the representative works for
      * @param department Department of the company the representative works for
      * @param position Position of the representative in the company
+     * @param email Email of the company representative
      */
     public CompanyRepresentative(int id, String name,
-            String companyName, String department, String position) {
-        super(id, name, "CR" + id);
+            String companyName, String department, String position, String email) {
+        super(id, name, email);
         this.companyName = companyName;
         this.department = department;
         this.position = position;

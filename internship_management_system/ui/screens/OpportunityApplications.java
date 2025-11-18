@@ -14,7 +14,6 @@ import internship_management_system.users.Student;
 import internship_management_system.users.User;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Screen to display a list of internship applications for a specific opportunity.
@@ -48,9 +47,7 @@ public class OpportunityApplications implements Screen {
 
         User user = uiState.getCurrentUser().get();
 
-        ArrayList<InternshipApplication> applications = DataStorage.getInternshipApplications(opp).stream()
-                .filter(app -> app.matchesFilter(user.getApplicationFilterSettings()))
-                .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<InternshipApplication> applications = new ArrayList<>(DataStorage.getInternshipApplications(opp, user.getApplicationFilterSettings()));
 
         if (applications.isEmpty()) {
             System.out.println("No internship application.");

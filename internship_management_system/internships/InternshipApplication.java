@@ -218,8 +218,8 @@ public class InternshipApplication {
         }
         String extraStr = String.join(" ", extra);
         if (!extraStr.isEmpty()) {
-            extraStr = "\n" + extraStr;
+            extraStr = "\n# " + extraStr;
         }
-        return String.format("(id=%d) %s (%s)'s application for (id=%d) %s%s", id, student.getName(), student.getUserID(), opportunity.getId(), opportunity.getTitle(), extraStr);
+        return String.format(" (id=%d) %s (%s)'s application for (id=%d) %s%s", id, student.getName(), student.getUserID(), opportunity.getId(), opportunity.getTitle(), extraStr);
     }
 }

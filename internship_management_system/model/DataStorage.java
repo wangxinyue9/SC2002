@@ -59,8 +59,8 @@ public class DataStorage {
      * @param position the position of the company representative
      * @return the newly created CompanyRepresentative object
      */
-    public static CompanyRepresentative newCompanyRep(String name, String companyName, String department, String position) {
-        CompanyRepresentative c = new CompanyRepresentative(companyReps.size() + 1, name, companyName, department, position);
+    public static CompanyRepresentative newCompanyRep(String name, String companyName, String department, String position, String email) {
+        CompanyRepresentative c = new CompanyRepresentative(companyReps.size() + 1, name, companyName, department, position, email);
         companyReps.add(c);
         return c;
     }
@@ -167,7 +167,9 @@ public class DataStorage {
      * @return the list of all internship opportunities
      */
     public static List<InternshipOpportunity> getInternshipOpportunities() {
-        return internshipOpportunities;
+        return internshipOpportunities.stream()
+                .filter(o -> !o.isDeleted())
+                .toList();
     }
 
     /**
@@ -177,6 +179,7 @@ public class DataStorage {
      */
     public static List<InternshipOpportunity> getInternshipOpportunities(InternshipOpportunityFilterSettings settings) {
         return internshipOpportunities.stream()
+                .filter(o -> !o.isDeleted())
                 .filter(o -> o.matchesFilter(settings))
                 .toList();
     }
@@ -221,6 +224,19 @@ public class DataStorage {
                 .filter(a -> a.getOpportunity().equals(opportunity))
                 .toList();
     }
+
+    /**
+     * Get the list of internship applications for a given opportunity matching the given filter settings
+     * @param opportunity The opportunity whose applications to retrieve
+     * @param settings The filter settings to apply
+     * @return the list of internship applications for the given opportunity matching the filter
+     */
+    public static List<InternshipApplication> getInternshipApplications(InternshipOpportunity opportunity, InternshipApplicationFilterSettings settings) {
+        return internshipApplications.stream()
+                .filter(a -> a.getOpportunity().equals(opportunity) && a.matchesFilter(settings))
+                .toList();
+    }
+
 
     /**
      * Get the internship application for a given opportunity and student

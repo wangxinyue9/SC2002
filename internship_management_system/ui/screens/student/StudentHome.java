@@ -1,45 +1,48 @@
-package internship_management_system.ui.screens;
+package internship_management_system.ui.screens.student;
 
 import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
-import internship_management_system.ui.IO;
-import internship_management_system.ui.screens.career_center_staff.ManageCRApplications;
-import internship_management_system.ui.screens.filters.application.EditApplicationFilter;
 import internship_management_system.ui.screens.filters.opportunity.EditOpportunityFilter;
-import internship_management_system.users.CareerCentreStaff;
+import internship_management_system.ui.IO;
+import internship_management_system.ui.screens.ChangePassword;
+import internship_management_system.ui.screens.HomeScreen;
+import internship_management_system.ui.screens.InternshipApplicationList;
+import internship_management_system.ui.screens.InternshipOpportunityList;
+import internship_management_system.ui.screens.filters.application.EditApplicationFilter;
+import internship_management_system.users.Student;
 import java.util.Optional;
 
 /**
- * Career Center Staff Home Screen
+ * Student's home screen
  */
-public class CareerCentreStaffHome implements Screen {
-    public static final CareerCentreStaffHome INSTANCE = new CareerCentreStaffHome();
+public class StudentHome implements Screen {
+
+    public static final StudentHome INSTANCE = new StudentHome();
 
     /**
      * Private constructor to enforce singleton pattern
      */
-    private CareerCentreStaffHome() {}
-
+    private StudentHome() {
+    }
 
     @Override
     public Optional<Screen> show(UIState uiState) {
-        if(!(uiState.getCurrentUser().isPresent())) {
+        if (!uiState.getCurrentUser().isPresent()) {
             IO.exitWithError("User not logged in");
         }
-        if(!(uiState.getCurrentUser().get() instanceof CareerCentreStaff)) {
-            IO.exitWithError("Current user is not Career Center Staff");
+        if (!(uiState.getCurrentUser().get() instanceof Student)) {
+            IO.exitWithError("Current user is not a student");
         }
+
         IO.clearConsole();
-        printTitle("Career Center Staff Home", uiState);
+        printTitle("Student Home", uiState);
 
         String operations[] = {
             "Change password",
             "Edit internship opportunity filter settings",
             "Edit internship application filter settings",
-            "Manage company representative applications",
-            "Manage internship opportunities",
-            "Manage internship applications",
-            "Generate report"
+            "Show all internship opportunities",
+            "Show my internship applications"
         };
         for (int i = 0; i < operations.length; i++) {
             System.out.printf("%d. %s\n", i + 1, operations[i]);
@@ -61,17 +64,10 @@ public class CareerCentreStaffHome implements Screen {
                 return Optional.of(EditApplicationFilter.INSTANCE);
             }
             case "4" -> {
-                return Optional.of(ManageCRApplications.INSTANCE);
-            }
-            case "5" -> {
                 return Optional.of(InternshipOpportunityList.INSTANCE);
             }
-            case "6" -> {
+            case "5" -> {
                 return Optional.of(InternshipApplicationList.INSTANCE);
-            }
-            case "7" -> {
-                // TODO: Generate report screen
-                return Optional.of(INSTANCE);
             }
             case "0" -> {
                 uiState.setCurrentUser(Optional.empty());
@@ -82,7 +78,7 @@ public class CareerCentreStaffHome implements Screen {
                 return Optional.empty();
             }
             default -> {
-                return Optional.of(CareerCentreStaffHome.INSTANCE);
+                return Optional.of(StudentHome.INSTANCE);
             }
         }
     }

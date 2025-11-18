@@ -31,3 +31,8 @@ replay_pid*
 
 .idea/**/*
 SourceCodes.iml
+out/**/*
+.DS_Store
+.vscode/**/*
+build/**/*
+class-diagram.txt

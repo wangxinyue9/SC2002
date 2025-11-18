@@ -16,13 +16,13 @@ import internship_management_system.users.CompanyRepresentative;
 /**
  * Screen for managing Company Representative applications by Career Center Staff.
  */
-public class ManageCRApplications implements Screen {
-    public static final ManageCRApplications INSTANCE = new ManageCRApplications();
+public class CCSManageCRApplications implements Screen {
+    public static final CCSManageCRApplications INSTANCE = new CCSManageCRApplications();
 
     /*
      * Private constructor to enforce singleton pattern.
      */
-    private ManageCRApplications() {}
+    private CCSManageCRApplications() {}
 
     @Override
     public Optional<Screen> show(UIState uiState) {
@@ -57,7 +57,7 @@ public class ManageCRApplications implements Screen {
                 return Optional.empty();
             }
             if (opi < 1 || opi > pendingCRs.size()) {
-                return Optional.of(ManageCRApplications.INSTANCE);
+                return Optional.of(CCSManageCRApplications.INSTANCE);
             } else {
                 CompanyRepresentative cr = pendingCRs.get(opi - 1);
                 System.out.print("Decision? [C]ancel / [A]pprove / [R]eject: ");
@@ -72,10 +72,10 @@ public class ManageCRApplications implements Screen {
                     default -> {
                     }
                 }
-                return Optional.of(ManageCRApplications.INSTANCE);
+                return Optional.of(CCSManageCRApplications.INSTANCE);
             }
         } catch (NumberFormatException e) {
-            return Optional.of(ManageCRApplications.INSTANCE);
+            return Optional.of(CCSManageCRApplications.INSTANCE);
         }
     }
 }

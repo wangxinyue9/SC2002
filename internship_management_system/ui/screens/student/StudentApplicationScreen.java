@@ -79,6 +79,9 @@ public class StudentApplicationScreen implements Screen {
             IO.exitWithError("Unknown internship application status.");
         }
 
+        for(int i = 1; i <= options.size(); i++) {
+            System.out.printf("%d. %s\n", i, options.get(i - 1));
+        }
         System.out.println("0. Back");
         System.out.print("Select an option: ");
         String choice = IO.getScanner().nextLine().trim();
