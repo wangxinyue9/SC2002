@@ -9,11 +9,13 @@ import internship_management_system.ui.UIState;
 import internship_management_system.ui.screens.career_center_staff.CCSApplicationScreen;
 import internship_management_system.ui.screens.company_representative.CRApplicationScreen;
 import internship_management_system.ui.screens.student.StudentApplicationScreen;
+import internship_management_system.users.CareerCentreStaff;
 import internship_management_system.users.CompanyRepresentative;
 import internship_management_system.users.Student;
 import internship_management_system.users.User;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Screen to display a list of internship applications.
@@ -43,8 +45,13 @@ public class InternshipApplicationList implements Screen {
         InternshipApplicationFilterSettings settings = user.getApplicationFilterSettings();
         if (user instanceof Student student) {
             applications = new ArrayList<>(DataStorage.getInternshipApplications(student, settings)); 
-        }else {
+        }else if(user instanceof  CareerCentreStaff) {
             applications = new ArrayList<>(DataStorage.getInternshipApplications(settings));
+        } else{
+            CompanyRepresentative cr = (CompanyRepresentative) user;
+            applications = DataStorage.getInternshipApplications(settings).stream()
+                .filter(opp -> opp.getOpportunity().getCompanyRep().equals(cr))
+                .collect(Collectors.toCollection(ArrayList::new));
         }
 
         if (applications.isEmpty()) {

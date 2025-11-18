@@ -125,7 +125,7 @@ public class InternshipApplication {
             this.opportunity.takeUpASlot();
             DataStorage.getInternshipApplications(this.student).forEach((application) -> {
                 if (!application.equals(this)) {
-                    application.confirmWithdraw(false);
+                    application.confirmWithdraw(true);
                 }
             });
         }

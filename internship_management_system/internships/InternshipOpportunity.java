@@ -228,6 +228,7 @@ public class InternshipOpportunity {
         }
         if(numOfSlots > 0) {
             this.numOfSlots = numOfSlots;
+            this.numOfRemainingSlots = numOfSlots;
         }
     }
 

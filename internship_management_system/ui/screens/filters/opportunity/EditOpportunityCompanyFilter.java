@@ -43,7 +43,7 @@ public class EditOpportunityCompanyFilter implements FilterSettingsToggleableLis
         Runnable[] toggler = new Runnable[sz];
         for(int i = 0; i < sz; i++) {
             final int finalI = i;
-            currentValue[i] = (settings.getCompanies().isPresent() && settings.getCompanies().get().contains(companies[i]));
+            currentValue[i] = (settings.getCompanies().isEmpty() || settings.getCompanies().get().contains(companies[i]));
             if(currentValue[i]) {
                 toggler[i] = () -> {
                     settings.removeCompany(companies[finalI]);
