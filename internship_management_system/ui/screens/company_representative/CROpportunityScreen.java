@@ -1,5 +1,6 @@
 package internship_management_system.ui.screens.company_representative;
 
+import internship_management_system.enums.InternshipOpportunityStatus;
 import internship_management_system.internships.InternshipOpportunity;
 import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
@@ -42,6 +43,10 @@ public class CROpportunityScreen implements Screen {
 
         System.out.println("1. Toggle Visibility");
         System.out.println("2. View Applications");
+        if(opp.getStatus() == InternshipOpportunityStatus.PENDING) {
+            System.out.println("3. Edit Opportunity");
+            System.out.println("4. Delete Opportunity");
+        }
         System.out.println("0. Back");
 
         String input = IO.getScanner().nextLine().trim();
@@ -53,6 +58,26 @@ public class CROpportunityScreen implements Screen {
             case "2" -> {
                 uiState.setCurrentOpportunity(Optional.of(opp));
                 return Optional.of(OpportunityApplications.INSTANCE);
+            }
+            case "3" -> {
+                if(opp.getStatus() != InternshipOpportunityStatus.PENDING) {
+                    return Optional.of(INSTANCE);
+                }
+                uiState.setCurrentOpportunity(Optional.of(opp));
+                return Optional.of(CREditOpportunity.INSTANCE);
+            }
+            case "4" -> {
+                if(opp.getStatus() != InternshipOpportunityStatus.PENDING) {
+                    return Optional.of(INSTANCE);
+                }
+                System.out.print("Are you sure you want to delete this opportunity? This action cannot be undone. [Y/n]: ");
+                String choice = IO.getScanner().nextLine().trim().toLowerCase();
+                if (choice.isEmpty() || choice.equals("y")) {
+                    opp.delete();
+                    return Optional.empty();
+                } else {
+                    return Optional.of(INSTANCE);
+                }
             }
             case "0" -> {
                 return Optional.empty();

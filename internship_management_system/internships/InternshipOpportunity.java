@@ -14,14 +14,15 @@ import java.util.ArrayList;
 public class InternshipOpportunity {
 
     private final int id;
-    private final String title, description, preferredMajor;
-    private final InternshipLevel level;
-    private final LocalDate openingDate, closingDate;
+    private String title, description, preferredMajor;
+    private InternshipLevel level;
+    private LocalDate openingDate, closingDate;
     private InternshipOpportunityStatus status;
     private final CompanyRepresentative companyRep;
-    private final int numOfSlots;
+    private int numOfSlots;
     private int numOfRemainingSlots;
     private boolean visibility;
+    private boolean isDeleted;
 
     /**
      * Constructor for InternshipOpportunity
@@ -53,6 +54,7 @@ public class InternshipOpportunity {
         this.numOfSlots = numOfSlots;
         this.numOfRemainingSlots = numOfSlots;
         this.visibility = visibility;
+        this.isDeleted = false;
     }
 
     /**
@@ -95,12 +97,12 @@ public class InternshipOpportunity {
         }
         String extraInfo = String.join(" ", extra);
 
-        return "(id = " + this.id + ") " + this.title + "\n"
-                + this.description + "\n"
-                + "Company: " + this.companyRep.getCompanyName() + "\tSlots: " + numOfSlots + "\n"
-                + "Preferred Major: " + this.preferredMajor + "\tLevel: " + lvl + "\n"
-                + "Opening Date: " + openingDate + "\tClosing Date: " + closingDate
-                + (extraInfo.isEmpty() ? "" : "\n" + extraInfo);
+        return " (id=" + this.id + ") " + this.title + "\n# "
+                + this.description + "\n# "
+                + "Company: " + this.companyRep.getCompanyName() + " | Slots: " + numOfSlots + "\n# "
+                + "Preferred Major: " + this.preferredMajor + "| Level: " + lvl + "\n# "
+                + "Opening Date: " + openingDate + " | Closing Date: " + closingDate
+                + (extraInfo.isEmpty() ? "" : "\n# " + extraInfo);
     }
 
     /**
@@ -196,6 +198,40 @@ public class InternshipOpportunity {
     }
 
     /**
+     * Edit the internship opportunity details
+     * @param title The new title of the internship opportunity, null or empty to keep current
+     * @param description The new description of the internship opportunity, null or empty to keep current
+     * @param preferredMajor The new preferred major of the internship opportunity, null or empty to keep current
+     * @param level The new level of the internship opportunity, null to keep current
+     * @param openingDate The new opening date of the internship opportunity, null to keep current
+     * @param closingDate The new closing date of the internship opportunity, null to keep current
+     * @param numOfSlots The new number of slots of the internship opportunity, less than or equal to 0 to keep current
+     */
+    public void editOpportunity(String title, String description, String preferredMajor, InternshipLevel level, LocalDate openingDate, LocalDate closingDate, int numOfSlots) {
+        if(title != null && !title.isEmpty()) {
+            this.title = title;
+        }
+        if(description != null && !description.isEmpty()) {
+            this.description = description;
+        }
+        if(preferredMajor != null && !preferredMajor.isEmpty()) {
+            this.preferredMajor = preferredMajor;
+        }
+        if(level != null) {
+            this.level = level;
+        }
+        if(openingDate != null) {
+            this.openingDate = openingDate;
+        }
+        if(closingDate != null) {
+            this.closingDate = closingDate;
+        }
+        if(numOfSlots > 0) {
+            this.numOfSlots = numOfSlots;
+        }
+    }
+
+    /**
      * Toggle the visibility status of the internship opportunity
      */
     public void toggleVisibility() {
@@ -203,7 +239,8 @@ public class InternshipOpportunity {
     }
 
     /**
-     * Free up a slot for the internship opportunity Only used internally
+     * Free up a slot for the internship opportunity
+     * Only used internally
      */
     void freeUpASlot() {
         numOfRemainingSlots++;
@@ -213,7 +250,8 @@ public class InternshipOpportunity {
     }
 
     /**
-     * Take up a slot for the internship opportunity Only used internally
+     * Take up a slot for the internship opportunity
+     * Only used internally
      */
     void takeUpASlot() {
         numOfRemainingSlots--;
@@ -258,5 +296,19 @@ public class InternshipOpportunity {
             return false;
         }
         return !(this.closingDate.isBefore(LocalDate.now()) && !filter.isShowClosed());
+    }
+
+    /**
+     * @return whether the internship opportunity is deleted
+     */
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+    
+    /**
+     * Mark the internship opportunity as deleted
+     */
+    public void delete() {
+        this.isDeleted = true;
     }
 }

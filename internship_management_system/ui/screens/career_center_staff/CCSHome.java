@@ -1,24 +1,27 @@
-package internship_management_system.ui.screens;
+package internship_management_system.ui.screens.career_center_staff;
 
 import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
-import internship_management_system.ui.screens.filters.opportunity.EditOpportunityFilter;
-import internship_management_system.enums.CompanyRepresentativeStatus;
 import internship_management_system.ui.IO;
+import internship_management_system.ui.screens.ChangePassword;
+import internship_management_system.ui.screens.HomeScreen;
+import internship_management_system.ui.screens.InternshipApplicationList;
+import internship_management_system.ui.screens.InternshipOpportunityList;
 import internship_management_system.ui.screens.filters.application.EditApplicationFilter;
-import internship_management_system.users.CompanyRepresentative;
+import internship_management_system.ui.screens.filters.opportunity.EditOpportunityFilter;
+import internship_management_system.users.CareerCentreStaff;
 import java.util.Optional;
 
 /**
- * Company Representative Home Screen
+ * Career Center Staff Home Screen
  */
-public class CompanyRepHome implements Screen {
-    public static final CompanyRepHome INSTANCE = new CompanyRepHome();
+public class CCSHome implements Screen {
+    public static final CCSHome INSTANCE = new CCSHome();
 
     /**
      * Private constructor to enforce singleton pattern
      */
-    private CompanyRepHome() {}
+    private CCSHome() {}
 
 
     @Override
@@ -26,33 +29,22 @@ public class CompanyRepHome implements Screen {
         if(!(uiState.getCurrentUser().isPresent())) {
             IO.exitWithError("User not logged in");
         }
-        if(!(uiState.getCurrentUser().get() instanceof CompanyRepresentative)) {
-            IO.exitWithError("Current user is not a Company Representative");
+        if(!(uiState.getCurrentUser().get() instanceof CareerCentreStaff)) {
+            IO.exitWithError("Current user is not Career Center Staff");
         }
-        CompanyRepresentative user = (CompanyRepresentative) uiState.getCurrentUser().get();
-        
         IO.clearConsole();
-        printTitle("Company Representative Home", uiState);
-
-        if (user.getStatus() != CompanyRepresentativeStatus.APPROVED) {
-            if (user.getStatus() == CompanyRepresentativeStatus.REJECTED) {
-                System.out.println("Your application to be a Company Representative has been rejected by the Career Center Staff.");
-            } else {
-                System.out.println("Your account is still pending approval by the Career Center Staff.");
-            }
-            System.out.println("Please contact the Career Center for more information.");
-            System.out.println("Press Enter to return to login screen...");
-            IO.getScanner().nextLine();
-            uiState.setCurrentUser(Optional.empty());
-            return Optional.of(HomeScreen.INSTANCE);
-        }
+        printTitle("Career Center Staff Home", uiState);
 
         String operations[] = {
             "Change password",
             "Edit internship opportunity filter settings",
             "Edit internship application filter settings",
+            "Manage company representative applications",
             "Manage internship opportunities",
-            "Manage internship applications"
+            "Manage pending internship opportunities",
+            "Manage internship applications",
+            "Manage applications with pending withdrawal requests",
+            "Generate report"
         };
         for (int i = 0; i < operations.length; i++) {
             System.out.printf("%d. %s\n", i + 1, operations[i]);
@@ -74,10 +66,22 @@ public class CompanyRepHome implements Screen {
                 return Optional.of(EditApplicationFilter.INSTANCE);
             }
             case "4" -> {
-                return Optional.of(InternshipOpportunityList.INSTANCE);
+                return Optional.of(CCSManageCRApplications.INSTANCE);
             }
             case "5" -> {
+                return Optional.of(InternshipOpportunityList.INSTANCE);
+            }
+            case "6" -> {
+                return Optional.of(CCSPendingOpportunities.INSTANCE);
+            }
+            case "7" -> {
                 return Optional.of(InternshipApplicationList.INSTANCE);
+            }
+            case "8" -> {
+                return Optional.of(CCSPendingWithdrawRequests.INSTANCE);
+            }
+            case "9" -> {
+                return Optional.of(CCSReportScreen.INSTANCE);
             }
             case "0" -> {
                 uiState.setCurrentUser(Optional.empty());
@@ -88,7 +92,7 @@ public class CompanyRepHome implements Screen {
                 return Optional.empty();
             }
             default -> {
-                return Optional.of(CompanyRepHome.INSTANCE);
+                return Optional.of(CCSHome.INSTANCE);
             }
         }
     }

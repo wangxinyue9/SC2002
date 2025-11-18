@@ -7,7 +7,7 @@ import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
 import internship_management_system.ui.screens.career_center_staff.CCSOpportunityScreen;
 import internship_management_system.ui.screens.company_representative.CROpportunityScreen;
-import internship_management_system.ui.screens.company_representative.CreateNewOpportunity;
+import internship_management_system.ui.screens.company_representative.CRCreateNewOpportunity;
 import internship_management_system.ui.screens.student.StudentOpportunityScreen;
 import internship_management_system.users.CompanyRepresentative;
 import internship_management_system.users.Student;
@@ -54,14 +54,19 @@ public class InternshipOpportunityList implements Screen {
         }
         
         System.out.print("");
-        if(user instanceof CompanyRepresentative) System.out.print("Type internship opportunity row number (not id) to manage, '+' to create new or 0 to go back: ");
+        boolean canCreateOpportunity = false;
+        if(user instanceof CompanyRepresentative cr) {
+            canCreateOpportunity = DataStorage.getInternshipOpportunities().stream()
+                .filter(o -> !o.isDeleted() && o.getCompanyRep().equals(cr)).count() < 5;
+        }
+        if(canCreateOpportunity) System.out.print("Type internship opportunity row number (not id) to manage, '+' to create new or 0 to go back: ");
         else if(user instanceof Student) System.out.print("Type internship opportunity row number (not id) to view, or 0 to go back: ");
         else System.out.print("Type internship opportunity row number (not id) to manage, or 0 to go back: ");
 
         String input = IO.getScanner().nextLine().trim();
 
-        if(input.equals("+") && user instanceof CompanyRepresentative) {
-            return Optional.of(CreateNewOpportunity.INSTANCE);
+        if(input.equals("+") && canCreateOpportunity) {
+            return Optional.of(CRCreateNewOpportunity.INSTANCE);
         }
 
         try {

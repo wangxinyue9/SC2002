@@ -16,13 +16,13 @@ import java.util.Optional;
 /**
  * Screen for creating a new internship opportunity by Company Representatives.
  */
-public class CreateNewOpportunity implements Screen {
-    public static final CreateNewOpportunity INSTANCE = new CreateNewOpportunity();
+public class CRCreateNewOpportunity implements Screen {
+    public static final CRCreateNewOpportunity INSTANCE = new CRCreateNewOpportunity();
 
     /*
      * Private constructor to enforce singleton pattern.
      */
-    private CreateNewOpportunity() {}
+    private CRCreateNewOpportunity() {}
 
     @Override
     public Optional<Screen> show(UIState uiState) {

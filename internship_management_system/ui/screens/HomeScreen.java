@@ -2,6 +2,7 @@ package internship_management_system.ui.screens;
 
 import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
+import internship_management_system.ui.screens.company_representative.CRRegister;
 import internship_management_system.ui.IO;
 import java.util.Optional;
 
@@ -36,7 +37,7 @@ public class HomeScreen implements Screen {
                 return Optional.of(LoginScreen.INSTANCE);
             }
             case "2" -> {
-                return Optional.of(CompanyRepRegister.INSTANCE);
+                return Optional.of(CRRegister.INSTANCE);
             }
             case "e" -> {
                 System.exit(0);

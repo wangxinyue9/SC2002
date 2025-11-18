@@ -1,7 +1,8 @@
-package internship_management_system.ui.screens;
+package internship_management_system.ui.screens.company_representative;
 
 import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
+import internship_management_system.ui.screens.HomeScreen;
 import internship_management_system.users.CompanyRepresentative;
 import internship_management_system.model.DataStorage;
 import internship_management_system.ui.IO;
@@ -10,13 +11,13 @@ import java.util.Optional;
 /**
  * Company Representatives can be registered here
  */
-public class CompanyRepRegister implements Screen {
-    public static final CompanyRepRegister INSTANCE = new CompanyRepRegister();
+public class CRRegister implements Screen {
+    public static final CRRegister INSTANCE = new CRRegister();
 
     /**
      * Private constructor to enforce singleton pattern
      */
-    private CompanyRepRegister() {}
+    private CRRegister() {}
 
 
     @Override
@@ -36,13 +37,16 @@ public class CompanyRepRegister implements Screen {
                 return Optional.of(INSTANCE);
             }
         }
+
+        System.out.print("Email: ");
+        String email = IO.getScanner().nextLine().trim();
         System.out.print("Company name: ");
         String companyName = IO.getScanner().nextLine().trim();
         System.out.print("Department: ");
         String department = IO.getScanner().nextLine().trim();
         System.out.print("Position: ");
         String position = IO.getScanner().nextLine().trim();
-        if (name.isEmpty() || companyName.isEmpty() || department.isEmpty() || position.isEmpty()) {
+        if (name.isEmpty() || companyName.isEmpty() || department.isEmpty() || position.isEmpty() || email.isEmpty()) {
             System.out.println("All fields are required.");
             System.out.print("Press Enter to try again...");
             IO.getScanner().nextLine();
@@ -65,7 +69,7 @@ public class CompanyRepRegister implements Screen {
             return Optional.of(INSTANCE);
         }
 
-        CompanyRepresentative newRep = DataStorage.newCompanyRep(name, companyName, department, position);
+        CompanyRepresentative newRep = DataStorage.newCompanyRep(name, companyName, department, position, email);
         newRep.changePassword(password);
 
 

@@ -2,6 +2,9 @@ package internship_management_system.ui.screens;
 
 import internship_management_system.ui.Screen;
 import internship_management_system.ui.UIState;
+import internship_management_system.ui.screens.career_center_staff.CCSHome;
+import internship_management_system.ui.screens.company_representative.CRHome;
+import internship_management_system.ui.screens.student.StudentHome;
 import internship_management_system.users.User;
 import internship_management_system.model.DataStorage;
 import internship_management_system.ui.IO;
@@ -30,7 +33,7 @@ public class LoginScreen implements Screen {
         IO.clearConsole();
         printTitle("Login", uiState);
 
-        System.out.print("Username (keep empty to go back): ");
+        System.out.print("User ID (keep empty to go back): ");
         String username = IO.getScanner().nextLine().trim();
         if (username.isEmpty()) {
             System.out.print("Are you sure you want to go back? [Y/n] ");
@@ -60,10 +63,10 @@ public class LoginScreen implements Screen {
             return Optional.of(StudentHome.INSTANCE);
         }
         else if(u.get() instanceof CompanyRepresentative) {
-            return Optional.of(CompanyRepHome.INSTANCE);
+            return Optional.of(CRHome.INSTANCE);
         }
         else {
-            return Optional.of(CareerCentreStaffHome.INSTANCE);
+            return Optional.of(CCSHome.INSTANCE);
         }
     }
 

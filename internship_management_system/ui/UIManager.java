@@ -19,13 +19,12 @@ public class UIManager {
     /**
      * instantiate UI Manager
      * @param studentFile Path to the student data file
-     * @param companyRepFile Path to company representative data file
      * @param careerStaffFile Path to career staff data file
      */
-    public UIManager(String studentFile, String companyRepFile, String careerStaffFile) {
+    public UIManager(String studentFile, String careerStaffFile) {
         this.uiState = new UIState();
         this.screens = new ArrayList<>();
-        loadDataFromCSV(studentFile, companyRepFile, careerStaffFile);
+        loadDataFromCSV(studentFile, careerStaffFile);
     }
 
     /**
@@ -57,10 +56,9 @@ public class UIManager {
     /**
      * Loads data from CSV files into the DataStorage
      * @param studentFile Path to the student data file
-     * @param companyRepFile Path to company representative data file
      * @param careerStaffFile Path to career staff data file
      */
-    final void loadDataFromCSV(String studentFile, String companyRepFile, String careerStaffFile) {
+    final void loadDataFromCSV(String studentFile, String careerStaffFile) {
         try (Scanner sc2 = new Scanner(new File(studentFile))) {
             boolean firstLine = true;
             while (sc2.hasNextLine()) {
@@ -75,23 +73,6 @@ public class UIManager {
             sc2.close();
         } catch (FileNotFoundException | NumberFormatException | ArrayIndexOutOfBoundsException e) {
             System.err.printf("Failed to read student data from file \"%s\"\n", studentFile);
-            System.exit(1);
-        }
-
-        try (Scanner sc2 = new Scanner(new File(companyRepFile))) {
-            boolean firstLine = true;
-            while (sc2.hasNextLine()) {
-                String line = sc2.nextLine();
-                if (firstLine) {
-                    firstLine = false;
-                    continue;
-                }
-                String[] lineData = line.split(",");
-                DataStorage.newCompanyRep(lineData[1], lineData[2], lineData[3], lineData[4]); // CompanyRepID,Name,CompanyName,Department,Position, Email,Status
-            }
-            sc2.close();
-        } catch (FileNotFoundException | NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            System.err.printf("Failed to read company representative data from file \"%s\"\n", companyRepFile);
             System.exit(1);
         }
 
