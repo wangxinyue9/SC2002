@@ -1,14 +1,14 @@
 @startuml
-title Company Representative – Opportunity Management Flow
+title Company Representative - Opportunity Management Flow
 
-actor ":Company Representative\n<<actor>>" as CR
-participant "ui:UIManager\n<<control>>" as UIManager
-participant "oppList:InternshipOpportunityList\n<<boundary>>" as OppList
-participant "state:UIState\n<<entity>>" as UIState
-database "ds:DataStorage\n<<entity>>" as DataStorage
-participant "oppScreen:CROpportunityScreen\n<<boundary>>" as OppScreen
-entity "opp:InternshipOpportunity\n<<entity>>" as Opportunity
-actor ":Student\n<<actor>>" as StudentUser
+actor ":Company Representative" as CR
+control "ui:UIManager" as UIManager
+boundary "oppList:InternshipOpportunityList" as OppList
+entity "state:UIState" as UIState
+database "ds:DataStorage" as DataStorage
+boundary "oppScreen:CROpportunityScreen" as OppScreen
+entity "opp:InternshipOpportunity" as Opportunity
+actor ":Student" as StudentUser
 
 == Company Rep Views Opportunities ==
 CR -> UIManager: from CompanyRepHome choose "Manage opportunities"
