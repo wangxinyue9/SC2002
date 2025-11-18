@@ -59,23 +59,152 @@ end
 deactivate CompanyRepHome
 
 == Company Representative Opportunity Management ==
-ref over OppList,OppScreen,AppList,CRApp
-See "docs/company_rep_cr_screens.puml" for the detailed flow where the
-Company Representative filters opportunities, toggles visibility, and reviews
-student applications via the UI screens.
-end ref
+UIManager -> OppList: show(uiState)
+activate OppList
+OppList -> UIState: read CompanyRep filter settings
+OppList -> DataStorage: getInternshipOpportunities(filter)
+activate DataStorage
+DataStorage --> OppList: filtered opportunities
+deactivate DataStorage
+note over OppList
+Filters restrict view to the representative's company plus
+status/visibility preferences configured under Edit Opportunity Filters.
+end note
+alt no opportunities
+    OppList -> CR: show empty state
+    OppList --> UIManager: Optional.empty()
+    deactivate OppList
+    return
+else opportunities available
+    CR -> OppList: pick opportunity row / "+" to create
+    OppList -> UIState: setCurrentOpportunity(selected Opportunity)
+    OppList --> UIManager: CROpportunityScreen.INSTANCE
+end
+deactivate OppList
+
+UIManager -> OppScreen: show(uiState)
+activate OppScreen
+OppScreen -> CR: show summary + management options
+alt toggle visibility
+    CR -> OppScreen: choose Toggle Visibility
+    OppScreen -> Opportunity: toggleVisibility()
+    Opportunity --> OppScreen: visibility flipped (HIDDEN/VISIBLE)
+    OppScreen -> CR: refresh state (still needs CCS approval if pending)
+else view applications
+    CR -> OppScreen: choose "View Applications"
+    OppScreen --> UIManager: OpportunityApplications.INSTANCE
+end
+deactivate OppScreen
 
 == Career Centre Staff Approval ==
-ref over CCSOpp,Opportunity
-See "docs/company_rep_ccs_approval.puml" for how Career Centre Staff review,
-approve, or reject pending internship opportunities before students can see them.
-end ref
+CR -> CCS: request approval for newly created/updated opportunity
+CCS -> UIManager: access CCSOpportunityScreen
+UIManager -> CCSOpp: show(uiState)
+activate CCSOpp
+CCSOpp -> Opportunity: inspect status (PENDING/APPROVED/REJECTED)
+alt opportunity pending approval
+    CCS -> CCSOpp: choose [Approve] or [Reject]
+    alt approve
+        CCSOpp -> Opportunity: setStatus(APPROVED)
+        note over CCSOpp,Opportunity
+        Only APPROVED postings can be matched by student filters.
+        end note
+    else reject
+        CCSOpp -> Opportunity: setStatus(REJECTED)
+        CCSOpp -> CR: notify rejection (out-of-band)
+    end
+else status already resolved
+    CCSOpp -> CCS: show read-only details / view applications
+end
+CCSOpp --> UIManager: return to CCS workflow
+deactivate CCSOpp
 
 == Student Browsing Approved & Visible Opportunities ==
-ref over StudentUser,StudentOpp,StudentApp
-See "docs/company_rep_student_flow.puml" for how students only see APPROVED,
-visible opportunities matching their major/year filters and how they apply.
-end ref
+StudentUser -> UIManager: open opportunity list
+UIManager -> OppList: show(uiState) as student
+activate OppList
+OppList -> UIState: load student-specific filters
+note over StudentUser,OppList
+Student filters enforce:
+- Only APPROVED opportunities
+- Must be visible
+- Preferred major == student.major
+- Year 1-2: BASIC level only
+- Year 3+: BASIC/INTERMEDIATE/ADVANCED
+end note
+OppList -> DataStorage: getInternshipOpportunities(student filters)
+activate DataStorage
+DataStorage --> OppList: matching opportunities
+deactivate DataStorage
+alt student sees suitable opportunity
+    StudentUser -> OppList: select opportunity
+    OppList -> UIState: setCurrentOpportunity(selected)
+    OppList --> UIManager: StudentOpportunityScreen.INSTANCE
+else no matches
+    OppList -> StudentUser: show empty list (wait for approvals or adjust filters)
+end
+deactivate OppList
+
+UIManager -> StudentOpp: show(uiState)
+activate StudentOpp
+StudentOpp -> DataStorage: getInternshipApplicationForAnOpportunity(opp, student)
+DataStorage --> StudentOpp: Optional<Application>
+alt already applied
+    StudentOpp -> StudentUser: show "View your application"
+    StudentUser -> StudentOpp: open existing application
+    StudentOpp --> UIManager: StudentApplicationScreen.INSTANCE
+else eligible to apply
+    StudentOpp -> StudentUser: display "Apply" CTA
+    StudentUser -> StudentOpp: confirm apply
+    StudentOpp -> DataStorage: newInternshipApplication(opp, student)
+    DataStorage --> StudentOpp: Application (status=PENDING)
+    StudentOpp -> UIState: setCurrentApplication(Application)
+    StudentOpp --> UIManager: StudentApplicationScreen.INSTANCE
+else not eligible (filled / offer accepted elsewhere)
+    StudentOpp -> StudentUser: show reason + back
+end
+deactivate StudentOpp
+
+== Company Rep Reviews Applications ==
+UIManager -> AppList: show(uiState)
+activate AppList
+AppList -> DataStorage: getInternshipApplications(currentOpportunity)
+activate DataStorage
+DataStorage --> AppList: applications filtered by representative's settings
+deactivate DataStorage
+AppList -> CR: render application list
+CR -> AppList: choose application row
+AppList -> UIState: setCurrentApplication(selection)
+AppList --> UIManager: CRApplicationScreen.INSTANCE
+deactivate AppList
+
+UIManager -> CRApp: show(uiState)
+activate CRApp
+CRApp -> CR: display applicant details + available actions
+alt application pending & withdraw not approved & opportunity not filled
+    CR -> CRApp: choose decision
+    alt Offer internship
+        CRApp -> Application: finalizeApplicationStatus(true)
+        Application --> CRApp: status SUCCESSFUL (offer recorded)
+    else Reject application
+        CRApp -> Application: finalizeApplicationStatus(false)
+        Application --> CRApp: status UNSUCCESSFUL
+    end
+else already finalized / withdrawn / filled
+    CRApp -> CR: show read-only outcome
+end
+
+opt Student later accepts offer
+    StudentUser -> StudentApp: open successful application
+    StudentApp -> Application: confirmPlacement(true)
+    Application -> Opportunity: takeUpASlot()
+    note over StudentApp
+    DataStorage withdraws other offers for the student when one is accepted.
+    end note
+end
+
+CRApp --> UIManager: return to OpportunityApplications / menu
+deactivate CRApp
 
 UIManager --> LoginScreen: loop back or exit
 deactivate UIManager
