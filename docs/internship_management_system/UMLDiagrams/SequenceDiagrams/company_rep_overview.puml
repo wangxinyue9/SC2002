@@ -1,0 +1,70 @@
+@startuml
+title Company Representative - Overview (References Detailed Diagrams)
+
+actor ":Company Representative" as CR
+actor ":Career Centre Staff" as CCS
+actor ":Student" as StudentUser
+control "ui:UIManager" as UIManager
+boundary "login:LoginScreen" as LoginScreen
+entity "state:UIState" as UIState
+database "ds:DataStorage" as DataStorage
+
+CR -> UIManager: startSession()
+activate UIManager
+UIManager -> LoginScreen: show(uiState)
+activate LoginScreen
+CR -> LoginScreen: provide credentials
+LoginScreen -> DataStorage: getUserByUserID()
+DataStorage --> LoginScreen: Optional<User>
+alt invalid credentials
+    LoginScreen -> CR: show retry prompt
+else valid credentials
+    LoginScreen -> UIState: setCurrentUser(CR)
+end
+deactivate LoginScreen
+
+note over CR,UIManager
+Detailed login/approval flow:
+see company_rep_login_and_approval.puml
+end note
+
+UIManager -> CR: display CompanyRepHome
+alt CR approved
+    CR -> UIManager: choose "Manage opportunities"
+else pending/rejected
+    CR -> UIManager: return to Home/Logout
+end
+
+== Opportunity Lifecycle ==
+UIManager -> DataStorage: fetch opportunities based on CR filters
+DataStorage --> UIManager: list
+UIManager -> CR: show list / handle create/edit
+
+note over CR,UIManager
+Detailed opportunity management:
+see company_rep_opportunity_flow.puml
+end note
+
+== Career Centre Staff Collaboration ==
+CR -> CCS: submit opportunity for approval
+CCS -> DataStorage: update status (APPROVED/REJECTED)
+
+== Student Discovery ==
+StudentUser -> DataStorage: query visible, approved opportunities
+DataStorage --> StudentUser: matches per major/year
+StudentUser -> UIManager: apply to opportunity
+
+== Application Review ==
+CR -> DataStorage: view applications for selected opportunity
+DataStorage --> CR: filtered list
+CR -> DataStorage: finalize application status (offer/reject)
+
+note over CR,StudentUser
+Detailed application decisions & student follow-up:
+see company_rep_application_flow.puml
+end note
+
+UIManager -> CR: loop through operations / logout
+deactivate UIManager
+
+@enduml
